@@ -143,10 +143,10 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     """Отображение ингредиентов."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (AllowAny, )
-    filter_backends = [IngredientFilter, ]
+    pagination_class = None
+    permission_classes = [AllowAny]
     allowed_methods = ['GET']
-    pagination_class = LimitPageNumberPagination
+    filterset_class = IngredientFilter
 
 
 class ShoppingCartViewSet(ModelViewSet):
