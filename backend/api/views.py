@@ -6,8 +6,7 @@ from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import api_view, action
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (AllowAny, IsAuthenticated)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_401_UNAUTHORIZED
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -100,7 +99,7 @@ class TagViewSet(ReadOnlyModelViewSet):
     """Отображение тегов."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AllowAny, )
     pagination_class = None
 
 
@@ -144,7 +143,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     """Отображение ингредиентов."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny, )
     filter_backends = [IngredientFilter, ]
     search_fields = ['^name', ]
     pagination_class = LimitPageNumberPagination
