@@ -1,34 +1,35 @@
-import csv
-import os
+import json
 
-from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from recipes.models import Ingredient
+from recipes.models import Ingredient, Tag
 
 
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'filemane',
-            default='ingredients.csv',
-            nargs='?',
-            type=str
-        )
+        parser.add_argument("--path", type=str, help="file path")
 
     def handle(self, *args, **options):
-        try:
-            with open(os.path.join(
-                    settings.BASE_DIR,
-                    'data',
-                    options['filename']),
-                    'r',
-                    encoding='utf-8') as f:
-                data = csv.render(f)
-                for row in data:
-                    name, measurement_unit = row
-                    Ingredient.objects.get_or_create(
-                        name=name, measurement_unit=measurement_unit)
-        except FileNotFoundError:
-            raise CommandError('Добавьте файл ingredients в папку data')
+        file_path = options["path"]
+
+        with open(file_path, encoding='utf-8') as f:
+            jsondata = json.load(f)
+            if 'color' in jsondata[0]:
+                for line in jsondata:
+                    if not Tag.objects.filter(
+                       slug=line['slug']).exists():
+                        Tag.objects.create(
+                            name=line['name'],
+                            color=line['color'],
+                            slug=line['slug'],
+                        )
+            elif 'measurement_unit' in jsondata[0]:
+                for line in jsondata:
+                    if not Ingredient.objects.filter(
+                       name=line['name'],
+                       measurement_unit=line['measurement_unit']).exists():
+                        Ingredient.objects.create(
+                            name=line['name'],
+                            measurement_unit=line['measurement_unit']
+                        )

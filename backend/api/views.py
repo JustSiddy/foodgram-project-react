@@ -145,7 +145,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny, )
     filter_backends = [IngredientFilter, ]
-    search_fields = ['^name', ]
+    allowed_methods = ['GET']
     pagination_class = LimitPageNumberPagination
 
 
