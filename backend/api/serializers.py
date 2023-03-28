@@ -154,7 +154,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     """Сериализер модели рецептов."""
     author = CustomUserSerializer(read_only=True)
     ingredients = SerializerMethodField()
-    tags = TagSerializer(many=True)
+    tag = TagSerializer(many=True)
 
     is_favorited = SerializerMethodField(
         method_name='get_is_favorited')
