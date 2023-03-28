@@ -163,7 +163,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         method_name='get_is_in_shopping_cart')
 
     class Meta:
-        fields = ['id', 'tags', 'author', 'ingredient',
+        fields = ['id', 'tags', 'author', 'ingredients',
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time']
         model = Recipe
