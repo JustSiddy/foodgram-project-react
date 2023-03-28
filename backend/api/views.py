@@ -98,10 +98,9 @@ class UserViewSet(UserViewSet):
 class TagViewSet(ReadOnlyModelViewSet):
     """Отображение тегов."""
     queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-    permission_classes = [AllowAny]
-    allowed_methods = ['GET']
+    permission_classes = [AllowAny, ]
     pagination_class = None
+    serializer_class = TagSerializer
 
 
 class RecipeViewSet(ModelViewSet):
