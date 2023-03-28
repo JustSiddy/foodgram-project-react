@@ -1,6 +1,3 @@
-import base64
-
-from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, status
@@ -153,23 +150,11 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         return Recipe.objects.filter(author=obj).count()
 
 
-class DecodeImageField(serializers.ImageField):
-    """Image field in Base64 encoding."""
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-
-        return super().to_internal_value(data)
-
-
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализер модели рецептов."""
     author = CustomUserSerializer(read_only=True)
     ingredients = SerializerMethodField()
-    tag = TagSerializer(many=True)
-    image = DecodeImageField()
+    tags = TagSerializer(many=True)
 
     is_favorited = SerializerMethodField(
         method_name='get_is_favorited')
@@ -221,6 +206,7 @@ class CreateAddRecipeSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(), many=True
     )
     ingredients = AddIngredientToRecipeSerializer(many=True)
+    image = Base64ImageField()
 
     class Meta:
         fields = ['id', 'author', 'ingredients',
