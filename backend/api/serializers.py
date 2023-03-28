@@ -155,9 +155,10 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     ingredients = SerializerMethodField()
     tag = TagSerializer(many=True)
-    image = Base64ImageField()
+
     is_favorited = SerializerMethodField(
         method_name='get_is_favorited')
+    
     is_in_shopping_cart = SerializerMethodField(
         method_name='get_is_in_shopping_cart')
 
@@ -205,6 +206,7 @@ class CreateAddRecipeSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(), many=True
     )
     ingredients = AddIngredientToRecipeSerializer(many=True)
+    image = Base64ImageField()
 
     class Meta:
         fields = ['id', 'author', 'ingredients',
@@ -228,25 +230,23 @@ class CreateAddRecipeSerializer(serializers.ModelSerializer):
             list.append(i['id'])
         return data
 
-    def create_ingredients(self, ingredient, recipe):
-        for i in ingredient:
-            ingredient = Ingredient.objects.get(id=i['id'])
+    def create_ingredients(self, ingredients, recipe):
+        for ingredient in ingredients:
             IngredientInRecipe.objects.create(
-                ingredient=ingredient, recipe=recipe, amount=i['amount']
+                recipe=recipe,
+                ingredient_id=ingredient.get('id'),
+                amount=ingredient.get('amount'),
             )
 
     def create(self, instance, validated_data):
         """Создание рецепта доступно только авторизированному пользователю."""
-        author = self.context.get('request').user
+        image = validated_data.pop('image')
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
-        recipe = Recipe.objects.create(author=author, **validated_data)
-        instance.ingredients.clear()
+        recipe = Recipe.objects.create(image=image, **validated_data)
+        recipe.tags.set(tags)
         self.create_ingredients(ingredients, recipe)
-        instance.tags.clear()
-        instance.tags.set(tags)
-        instance.save()
-        return instance
+        return recipe
 
     def to_representation(self, instance):
         return RecipeSerializer(instance, context={
