@@ -1,3 +1,6 @@
+import base64
+
+from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, status
@@ -150,11 +153,23 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         return Recipe.objects.filter(author=obj).count()
 
 
+class DecodeImageField(serializers.ImageField):
+    """Image field in Base64 encoding."""
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+        return super().to_internal_value(data)
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализер модели рецептов."""
     author = CustomUserSerializer(read_only=True)
     ingredients = SerializerMethodField()
     tag = TagSerializer(many=True)
+    image = DecodeImageField()
 
     is_favorited = SerializerMethodField(
         method_name='get_is_favorited')
@@ -206,7 +221,6 @@ class CreateAddRecipeSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(), many=True
     )
     ingredients = AddIngredientToRecipeSerializer(many=True)
-    image = Base64ImageField()
 
     class Meta:
         fields = ['id', 'author', 'ingredients',
@@ -240,12 +254,12 @@ class CreateAddRecipeSerializer(serializers.ModelSerializer):
 
     def create(self, instance, validated_data):
         """Создание рецепта доступно только авторизированному пользователю."""
-        image = validated_data.pop('image')
-        tags = self.initial_data.get('tags')
         ingredients = validated_data.pop('ingredients')
-        recipe = Recipe.objects.create(image=image, **validated_data)
-        recipe.tags.set(tags)
+        tags = validated_data.pop('tags')
+        author = self.context.get('request').user
+        recipe = Recipe.objects.create(author=author, **validated_data)
         self.create_ingredients(ingredients, recipe)
+        self.create_tags(tags, recipe)
         return recipe
 
     def to_representation(self, instance):
