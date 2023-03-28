@@ -5,7 +5,7 @@ from .views import (IngredientViewSet, RecipeViewSet, TagViewSet,
                     FavoriteView, ShoppingCartViewSet, ShowSubscriptionsView,
                     SubscribeView, download_shopping_cart)
 
-app_name = 'recipes'
+app_name = 'api'
 
 router_v1 = routers.DefaultRouter()
 router_v1.register('ingredients', IngredientViewSet, basename='ingredients')
