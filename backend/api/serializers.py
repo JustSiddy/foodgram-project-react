@@ -205,7 +205,6 @@ class CreateAddRecipeSerializer(serializers.ModelSerializer):
         queryset=Tag.objects.all(), many=True
     )
     ingredients = AddIngredientToRecipeSerializer(many=True)
-    image = Base64ImageField
 
     class Meta:
         fields = ['id', 'author', 'ingredients',
