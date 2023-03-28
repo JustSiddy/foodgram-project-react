@@ -241,7 +241,7 @@ class CreateAddRecipeSerializer(serializers.ModelSerializer):
     def create(self, instance, validated_data):
         """Создание рецепта доступно только авторизированному пользователю."""
         image = validated_data.pop('image')
-        tags = validated_data.pop('tags')
+        tags = self.initial_data.get('tags')
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(image=image, **validated_data)
         recipe.tags.set(tags)
