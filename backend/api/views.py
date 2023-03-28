@@ -99,7 +99,8 @@ class TagViewSet(ReadOnlyModelViewSet):
     """Отображение тегов."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (AllowAny, )
+    permission_classes = [AllowAny]
+    allowed_methods = ['GET']
     pagination_class = None
 
 
