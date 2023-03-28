@@ -11,8 +11,8 @@ services:
     image: justs1ddy/backend:v1.0
     restart: always
     volumes:
-      - ../static/:/app/static/
-      - ../media/:/app/media/recipes/
+      - static_value:/app/static/
+      - media_value:/app/media/recipes/
     depends_on:
       - db
     env_file:
