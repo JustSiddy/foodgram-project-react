@@ -5,7 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -100,14 +101,14 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tags.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
-    permission_classes = [AllowAny]
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Отображение ингредиентов."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     search_fields = ['^name']
     pagination_class = None
     filter_backends = [IngredientFilter]
@@ -120,9 +121,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     Удаление рецепта.
     Просмотр рецепта.
     """
+    queryset = Recipe.objects.all()
     permission_classes = [IsAuthorOrAdminOrReadOnly]
     pagination_class = LimitPageNumberPagination
-    queryset = Recipe.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
 
