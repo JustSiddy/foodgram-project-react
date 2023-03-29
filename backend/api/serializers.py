@@ -106,8 +106,6 @@ class TagSerializer(serializers.ModelSerializer):
 
 class SubscriptionsSerializer(serializers.ModelSerializer):
     """Сериализер модели подписок."""
-    recipes_count = SerializerMethodField()
-    recipes = SerializerMethodField(read_only=True)
 
     class Meta:
         fields = ['user', 'author']
@@ -117,37 +115,12 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
                 queryset=Subscription.objects.all(),
                 fields=['user', 'author'],
             )
-
         ]
-
-    def validate(self, data):
-        author = self.instance
-        user = self.context.get('request').user
-        if Subscription.objects.filter(author=author, user=user).exists():
-            raise ValidationError(
-                detail='Подписка уже оформлена.',
-                code=status.HTTP_400_BAD_REQUEST
-            )
-        if user == author:
-            raise ValidationError(
-                detail='Подписка на самого себя - невозможна.',
-                code=status.HTTP_400_BAD_REQUEST
-            )
-        return data
-
-    def get_recipes(self, obj):
-        request = self.context.get('request')
-        if not request or request.user.is_anonymous:
-            return False
-        recipes = Recipe.objects.filter(author=obj)
-        limit = request.query_params.get('recipes_limit')
-        if limit:
-            recipes = recipes[:int(limit)]
-        return ShowFavoriteSerializer(
-            recipes, many=True, context={'request': request}).data
-
-    def get_recipes_count(self, obj):
-        return Recipe.objects.filter(author=obj).count()
+    
+    def to_representation(self, instance):
+        return ShowSubscriptionSerializer(instance.author, context={
+            'request', self.context.get('request')
+        }).data
 
 
 class RecipeSerializer(serializers.ModelSerializer):
