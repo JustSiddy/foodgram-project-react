@@ -21,11 +21,12 @@ class CustomUserSerializer(UserCreateSerializer):
                   'first_name', 'last_name', 'is_subscribed']
         model = User
 
-    def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
+    def get_is_in_shopping_cart(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
             return False
-        return Subscription.objects.filter(user=user, author=obj).exists()
+        shopping_cart = request.user.cart.filter(recipe=obj)
+        return shopping_cart.exists()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
