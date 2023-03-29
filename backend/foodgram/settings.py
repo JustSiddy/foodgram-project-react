@@ -10,8 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv(
     'SECRET_KEY',
-    default='7%dd60q-m#8h-$f67rrq8#565(_me9==-lx7s2*btrbjkr%lgo'
-)
+    default='7%dd60q-m#8h-$f67rrq8#565(_me9==-lx7s2*btrbjkr%lgo')
 
 DEBUG = True
 
@@ -82,8 +81,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3')},
     }
 
 
@@ -135,8 +133,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
-}
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']}
 
 DJOSER = {
     'SERIALIZERS': {

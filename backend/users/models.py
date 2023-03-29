@@ -22,8 +22,7 @@ class User(AbstractUser):
     email = models.EmailField(
         'Почта',
         max_length=254,
-        unique=True
-    )
+        unique=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
@@ -48,8 +47,7 @@ class Subscription(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='author',
-        verbose_name='Автор'
-    )
+        verbose_name='Автор')
 
     class Meta:
         verbose_name = 'Подписка'

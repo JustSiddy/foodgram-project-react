@@ -31,5 +31,5 @@ class Command(BaseCommand):
                        measurement_unit=line['measurement_unit']).exists():
                         Ingredient.objects.create(
                             name=line['name'],
-                            measurement_unit=line['measurement_unit']
+                            measurement_unit=line['measurement_unit'],
                         )
