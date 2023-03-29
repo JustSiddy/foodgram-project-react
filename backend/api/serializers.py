@@ -3,7 +3,7 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+from recipes.models import (Favorite, Ingredient, Recipe, IngredientInRecipe,
                             RecipeTag, ShoppingCart, Tag)
 from users.models import Subscription, User
 
@@ -65,7 +65,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = RecipeIngredient
+        model = IngredientInRecipe
         fields = ['id', 'name', 'amount', 'measurement_unit']
 
 
@@ -104,7 +104,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         ]
 
     def get_ingredients(self, obj):
-        ingredients = RecipeIngredient.objects.filter(recipe=obj)
+        ingredients = IngredientInRecipe.objects.filter(recipe=obj)
         return RecipeIngredientSerializer(ingredients, many=True).data
 
     def get_is_favorited(self, obj):
@@ -131,7 +131,7 @@ class AddIngredientRecipeSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        model = RecipeIngredient
+        model = IngredientInRecipe
         fields = ['id', 'amount']
 
 
@@ -177,7 +177,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def create_ingredients(self, ingredients, recipe):
         for i in ingredients:
             ingredient = Ingredient.objects.get(id=i['id'])
-            RecipeIngredient.objects.create(
+            IngredientInRecipe.objects.create(
                 ingredient=ingredient, recipe=recipe, amount=i['amount']
             )
 
@@ -206,7 +206,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         """
 
         RecipeTag.objects.filter(recipe=instance).delete()
-        RecipeIngredient.objects.filter(recipe=instance).delete()
+        IngredientInRecipe.objects.filter(recipe=instance).delete()
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         self.create_ingredients(ingredients, instance)

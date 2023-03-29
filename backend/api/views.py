@@ -9,12 +9,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+from recipes.models import (Favorite, Ingredient, Recipe, IngredientInRecipe,
                             ShoppingCart, Tag)
 from users.models import Subscription, User
 
 from .filters import IngredientFilter, RecipeFilter
-from .pagination import CustomPagination
+from .pagination import LimitPageNumberPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (CreateRecipeSerializer, FavoriteSerializer,
                           IngredientSerializer, RecipeSerializer,
@@ -57,7 +57,7 @@ class ShowSubscriptionsView(ListAPIView):
     """ Отображение подписок. """
 
     permission_classes = [IsAuthenticated, ]
-    pagination_class = CustomPagination
+    pagination_class = LimitPageNumberPagination
 
     def get(self, request):
         user = request.user
@@ -73,7 +73,7 @@ class FavoriteView(APIView):
     """ Добавление/удаление рецепта из избранного. """
 
     permission_classes = [IsAuthenticated, ]
-    pagination_class = CustomPagination
+    pagination_class = LimitPageNumberPagination
 
     def post(self, request, id):
         data = {
@@ -124,7 +124,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """ Операции с рецептами: добавление/изменение/удаление/просмотр. """
 
     permission_classes = [IsAuthorOrAdminOrReadOnly, ]
-    pagination_class = CustomPagination
+    pagination_class = LimitPageNumberPagination
     queryset = Recipe.objects.all()
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = RecipeFilter
@@ -176,7 +176,7 @@ class ShoppingCartView(APIView):
 @api_view(['GET'])
 def download_shopping_cart(request):
     ingredient_list = "Cписок покупок:"
-    ingredients = RecipeIngredient.objects.filter(
+    ingredients = IngredientInRecipe.objects.filter(
         recipe__shopping_cart__user=request.user
     ).values(
         'ingredient__name', 'ingredient__measurement_unit'

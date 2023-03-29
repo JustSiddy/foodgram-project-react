@@ -178,3 +178,26 @@ class Favorite(models.Model):
                 name='unique_user_favorites'
             )
         ]
+
+
+class RecipeTag(models.Model):
+    """ Модель связи тега и рецепта. """
+
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name='Рецепт'
+    )
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        verbose_name='Тег'
+    )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['recipe', 'tag'],
+                name='recipe_tag_unique'
+            )
+        ]
