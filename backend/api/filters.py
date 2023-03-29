@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django_filters.rest_framework import FilterSet, filters
-import django_filters as filters
+
 from recipes.models import Tag, Recipe
 
 User = get_user_model()
@@ -38,22 +37,3 @@ class RecipesFilter(FilterSet):
         if value:
             return queryset.filter(shopping_cart__user=self.request.user)
         return queryset
-
-
-class TagsMultipleChoiceField(
-        filters.MultipleChoiceField):
-    def validate(self, value):
-        if self.required and not value:
-            raise ValidationError(
-                self.error_messages['required'],
-                code='required')
-        for val in value:
-            if val in self.choices and not self.valid_value(val):
-                raise ValidationError(
-                    self.error_messages['invalid_choice'],
-                    code='invalid_choice',
-                    params={'value': val},)
-
-
-class TagsFilter(filters.AllValuesMultipleFilter):
-    field_class = TagsMultipleChoiceField
