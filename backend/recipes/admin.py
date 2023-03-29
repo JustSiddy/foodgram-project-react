@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (Favorite, Ingredient,
                      Recipe, ShoppingCart,
-                     Tag, IngredientInRecipe)
+                     Tags, IngredientInRecipe)
 
 
 class IngredientInRecipe(admin.TabularInline):
@@ -10,7 +10,7 @@ class IngredientInRecipe(admin.TabularInline):
     extra = 1
 
 
-@admin.register(Tag)
+@admin.register(Tags)
 class TagAdmin(admin.ModelAdmin):
     list_display = ['name', 'id', 'slug', 'color']
     search_fields = ['name', 'slug']

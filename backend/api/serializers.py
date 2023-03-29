@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (Favorite, Ingredient, Recipe, IngredientInRecipe,
-                            RecipeTag, ShoppingCart, Tag)
+                            RecipeTag, ShoppingCart, Tags)
 from users.models import Subscription, User
 
 
@@ -51,7 +51,7 @@ class TagSerializer(serializers.ModelSerializer):
     """ Сериализатор просмотра модели Тег. """
 
     class Meta:
-        model = Tag
+        model = Tags
         fields = ['id', 'name', 'color', 'slug']
 
 
@@ -141,7 +141,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     ingredients = AddIngredientRecipeSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True
+        queryset=Tags.objects.all(), many=True
     )
     image = Base64ImageField()
 
@@ -183,7 +183,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     def create_tags(self, tags, recipe):
         for tag in tags:
-            RecipeTag.objects.create(recipe=recipe, tag=tag)
+            RecipeTag.objects.create(recipe=recipe, tags=tag)
 
     def create(self, validated_data):
         """
@@ -204,7 +204,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         Изменение рецепта.
         Доступно только автору.
         """
-
         RecipeTag.objects.filter(recipe=instance).delete()
         IngredientInRecipe.objects.filter(recipe=instance).delete()
         ingredients = validated_data.pop('ingredients')

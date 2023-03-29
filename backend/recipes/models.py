@@ -6,7 +6,7 @@ from django.db.models import UniqueConstraint
 User = get_user_model()
 
 
-class Tag(models.Model):
+class Tags(models.Model):
     """Модель тегов."""
     name = models.CharField(
         'Название тега.',
@@ -82,8 +82,8 @@ class Recipe(models.Model):
         related_name='recipes',
         verbose_name='Ингредиенты блюда',
     )
-    tag = models.ManyToManyField(
-        Tag,
+    tags = models.ManyToManyField(
+        Tags,
         related_name='recipes',
         verbose_name='Ингредиенты'
     )
@@ -188,8 +188,8 @@ class RecipeTag(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Рецепт'
     )
-    tag = models.ForeignKey(
-        Tag,
+    tags = models.ForeignKey(
+        Tags,
         on_delete=models.CASCADE,
         verbose_name='Тег'
     )
@@ -197,7 +197,7 @@ class RecipeTag(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=['recipe', 'tag'],
+                fields=['recipe', 'tags'],
                 name='recipe_tag_unique'
             )
         ]

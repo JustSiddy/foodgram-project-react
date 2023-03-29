@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from recipes.models import (Favorite, Ingredient, Recipe, IngredientInRecipe,
-                            ShoppingCart, Tag)
+                            ShoppingCart, Tags)
 from users.models import Subscription, User
 
 from .filters import IngredientFilter, RecipeFilter
@@ -54,7 +54,7 @@ class SubscribeView(APIView):
 
 
 class ShowSubscriptionsView(ListAPIView):
-    """ Отображение подписок. """
+    """Отображение подписок."""
 
     permission_classes = [IsAuthenticated, ]
     pagination_class = LimitPageNumberPagination
@@ -70,8 +70,10 @@ class ShowSubscriptionsView(ListAPIView):
 
 
 class FavoriteView(APIView):
-    """ Добавление/удаление рецепта из избранного. """
-
+    """
+    Добавление рецепта в избранное.
+    Удаление рецепта из избранного.
+    """
     permission_classes = [IsAuthenticated, ]
     pagination_class = LimitPageNumberPagination
 
@@ -100,29 +102,31 @@ class FavoriteView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class TagViewSet(viewsets.ReadOnlyModelViewSet):
-    """ Отображение тегов. """
-
-    permission_classes = [AllowAny, ]
-    pagination_class = None
+class TagsViewSet(viewsets.ReadOnlyModelViewSet):
+    """Отображение тегов."""
+    queryset = Tags.objects.all()
     serializer_class = TagSerializer
-    queryset = Tag.objects.all()
+    pagination_class = None
+    permission_classes = [AllowAny, ]
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
-    """ Отображение ингредиентов. """
-
-    permission_classes = [AllowAny, ]
-    pagination_class = None
-    serializer_class = IngredientSerializer
+    """Отображение ингредиентов."""
     queryset = Ingredient.objects.all()
-    filter_backends = [IngredientFilter, ]
+    serializer_class = IngredientSerializer
+    permission_classes = [AllowAny, ]
     search_fields = ['^name', ]
+    pagination_class = None
+    filter_backends = [IngredientFilter, ]
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
-    """ Операции с рецептами: добавление/изменение/удаление/просмотр. """
-
+    """
+    Добавление рецепта.
+    Изменение рецепта.
+    Удаление рецепта.
+    Просмотр рецепта.
+    """
     permission_classes = [IsAuthorOrAdminOrReadOnly, ]
     pagination_class = LimitPageNumberPagination
     queryset = Recipe.objects.all()
@@ -141,8 +145,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
 class ShoppingCartView(APIView):
-    """ Добавление рецепта в корзину или его удаление. """
-
+    """
+    Добавление рецепта в корзину.
+    Удаление из корзины.
+    """
     permission_classes = [IsAuthenticated, ]
 
     def post(self, request, id):
