@@ -1,39 +1,35 @@
-from django.contrib.auth import get_user_model
-from django_filters.rest_framework import FilterSet, filters
-from recipes.models import Ingredient, Tag, Recipe
+from django_filters import rest_framework as filter
+from rest_framework.filters import SearchFilter
 
-User = get_user_model()
-
-
-class IngredientFilter(FilterSet):
-    name = filters.CharFilter('name', 'icontains')
+from recipes.models import Recipe, Tag
 
 
-class RecipesFilter(FilterSet):
-    author = filters.CharFilter()
-    tag = filters.AllValuesMultipleFilter(
+class IngredientFilter(SearchFilter):
+    search_param = 'name'
+
+
+class RecipeFilter(filter.FilterSet):
+    author = filter.CharFilter()
+    tags = filter.ModelMultipleChoiceFilter(
+        field_name='tags__slug',
         queryset=Tag.objects.all(),
-        field_name='tag__slug',
-        to_field_name='slug',
+        label='Tags',
+        to_field_name='slug'
     )
-    is_favorited = filters.NumberFilter(
-        method='get_is_favorited')
-    is_in_shopping_cart = filters.NumberFilter(
+    is_favorited = filter.BooleanFilter(method='get_favorite')
+    is_in_shopping_cart = filter.BooleanFilter(
         method='get_is_in_shopping_cart')
 
     class Meta:
-        fields = ['tag', 'author',
-                  'is_favorited', 'is_in_shopping_cart']
         model = Recipe
+        fields = ['tags', 'author', 'is_favorited', 'is_in_shopping_cart']
 
-    def filter_is_favorited(self, queryset, name, value):
-        user = self.request.user
-        if value and not user.is_anonymous:
-            return queryset.filter(favorited__user_id=user.id)
-        return queryset.all()
+    def get_favorite(self, queryset, name, value):
+        if value:
+            return queryset.filter(favorites__user=self.request.user)
+        return queryset
 
-    def filter_is_in_shopping_cart(self, queryset, name, value):
-        user = self.request.user
-        if value and not user.is_anonymous:
-            return queryset.filter(in_shopping_cart__user_id=user.id)
-        return queryset.all()
+    def get_is_in_shopping_cart(self, queryset, name, value):
+        if value:
+            return queryset.filter(shopping_cart__user=self.request.user)
+        return queryset
