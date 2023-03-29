@@ -144,7 +144,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
-        return RecipeSerializer(instance).data
+        return RecipeSerializer(instance, context={
+            'request': self.context.get('request')}).data
 
 
 class ShowFavoriteSerializer(serializers.ModelSerializer):
