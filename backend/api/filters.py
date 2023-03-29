@@ -11,15 +11,14 @@ class IngredientFilter(FilterSet):
 
 class RecipesFilter(FilterSet):
     author = filters.CharFilter()
-    tag = filters.ModelMultipleChoiceFilter(
+    tag = filters.AllValuesMultipleFilter(
         queryset=Tag.objects.all(),
         field_name='tag__slug',
         to_field_name='slug',
     )
-
-    is_favorited = filters.BooleanFilter(
+    is_favorited = filters.NumberFilter(
         method='get_is_favorited')
-    is_in_shopping_cart = filters.BooleanFilter(
+    is_in_shopping_cart = filters.NumberFilter(
         method='get_is_in_shopping_cart')
 
     class Meta:
@@ -27,12 +26,14 @@ class RecipesFilter(FilterSet):
                   'is_favorited', 'is_in_shopping_cart']
         model = Recipe
 
-    def get_is_favorited(self, queryset, name, value):
-        if value:
-            return queryset.filter(favorites__user=self.request.user)
-        return queryset
+    def filter_is_favorited(self, queryset, name, value):
+        user = self.request.user
+        if value and not user.is_anonymous:
+            return queryset.filter(favorited__user_id=user.id)
+        return queryset.all()
 
-    def get_is_in_shopping_cart(self, queryset, name, value):
-        if value:
-            return queryset.filter(shopping_cart__user=self.request.user)
-        return queryset
+    def filter_is_in_shopping_cart(self, queryset, name, value):
+        user = self.request.user
+        if value and not user.is_anonymous:
+            return queryset.filter(in_shopping_cart__user_id=user.id)
+        return queryset.all()
