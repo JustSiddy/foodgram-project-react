@@ -1,8 +1,10 @@
+from django.contrib.auth import get_user_model
+from django_filters.rest_framework import filters
 from django.core.exceptions import ValidationError
-from django_filters import filters
 
-from users.models import User
 from recipes.models import Tag, Recipe
+
+User = get_user_model()
 
 
 class IngredientFilter(filters.FilterSet):
@@ -54,3 +56,4 @@ class TagsMultipleChoiceField(filters.fields.Multiple):
 
 class TagsFilter(filters.AllValuesMultipleFilter):
     field_class = TagsMultipleChoiceField
+
