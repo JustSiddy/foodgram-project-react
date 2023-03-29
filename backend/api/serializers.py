@@ -21,12 +21,11 @@ class CustomUserSerializer(UserCreateSerializer):
                   'first_name', 'last_name', 'is_subscribed']
         model = User
 
-    def get_is_in_shopping_cart(self, obj):
-        request = self.context.get('request')
-        if not request or not request.user.is_authenticated:
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
             return False
-        shopping_cart = request.user.cart.filter(recipe=obj)
-        return shopping_cart.exists()
+        return Subscription.objects.filter(user=user, author=obj).exists()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -148,17 +147,17 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
-        if request.user.is_anonymous:
+        if not request or request.user:
             return False
-        return Favorite.objects.filter(
-            user=request.user, recipe_id=obj
-        ).exists()
+        favorite = request.user.favorites.filter(recipe=obj)
+        return favorite.exists()
 
     def get_is_in_shopping_cart(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
             return False
-        return user.shopping_cart.filter(recipe=obj).exists()
+        shopping_cart = request.user.cart.filter(recipe=obj)
+        return shopping_cart.exists()
 
 
 class AddIngredientToRecipeSerializer(serializers.ModelSerializer):
