@@ -107,7 +107,7 @@ class TagSerializer(serializers.ModelSerializer):
 class SubscriptionsSerializer(serializers.ModelSerializer):
     """Сериализер модели подписок."""
     recipes_count = SerializerMethodField()
-    recipes = SerializerMethodField()
+    recipes = SerializerMethodField(read_only=True)
 
     class Meta:
         fields = ['user', 'author']
