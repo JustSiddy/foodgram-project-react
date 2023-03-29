@@ -3,7 +3,7 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from recipes.models import (Favorite, Ingredient, Recipe, IngredientInRecipe,
+from recipes.models import (Favorites, Ingredient, Recipe, IngredientInRecipe,
                             RecipeTag, ShoppingCart, Tags)
 from users.models import Subscription, User
 
@@ -111,7 +111,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
-        return Favorite.objects.filter(
+        return Favorites.objects.filter(
             user=request.user, recipe_id=obj
         ).exists()
 
@@ -249,7 +249,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
     """ Сериализатор модели Избранное. """
 
     class Meta:
-        model = Favorite
+        model = Favorites
         fields = ['user', 'recipe']
 
     def to_representation(self, instance):

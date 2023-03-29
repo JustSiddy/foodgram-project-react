@@ -156,7 +156,7 @@ class ShoppingCart(models.Model):
         ]
 
 
-class Favorite(models.Model):
+class Favorites(models.Model):
     """Модель избранных рецептов."""
     user = models.ForeignKey(
         User,

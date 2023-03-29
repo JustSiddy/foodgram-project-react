@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recipes.models import (Favorite, Ingredient, Recipe, IngredientInRecipe,
+from recipes.models import (Favorites, Ingredient, Recipe, IngredientInRecipe,
                             ShoppingCart, Tags)
 from users.models import Subscription, User
 
@@ -82,7 +82,7 @@ class FavoriteView(APIView):
             'user': request.user.id,
             'recipe': id
         }
-        if not Favorite.objects.filter(
+        if not Favorites.objects.filter(
            user=request.user, recipe__id=id).exists():
             serializer = FavoriteSerializer(
                 data=data, context={'request': request}
@@ -95,9 +95,9 @@ class FavoriteView(APIView):
 
     def delete(self, request, id):
         recipe = get_object_or_404(Recipe, id=id)
-        if Favorite.objects.filter(
+        if Favorites.objects.filter(
            user=request.user, recipe=recipe).exists():
-            Favorite.objects.filter(user=request.user, recipe=recipe).delete()
+            Favorites.objects.filter(user=request.user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 

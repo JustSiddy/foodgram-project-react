@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (Favorite, Ingredient,
+from .models import (Favorites, Ingredient,
                      Recipe, ShoppingCart,
                      Tags, IngredientInRecipe)
 
@@ -32,13 +32,13 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
     def favorites(self, obj):
-        if Favorite.objects.filter(recipe=obj).exists():
-            return Favorite.objects.filter(recipe=obj).count()
+        if Favorites.objects.filter(recipe=obj).exists():
+            return Favorites.objects.filter(recipe=obj).count()
         return 0
 
 
-@admin.register(Favorite)
-class FavoriteAdmin(admin.ModelAdmin):
+@admin.register(Favorites)
+class FavoritesAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'recipe']
     search_fields = ['user__username', 'user__email']
     empty_value_display = '-пусто-'
