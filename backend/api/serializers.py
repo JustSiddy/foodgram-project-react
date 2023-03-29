@@ -76,6 +76,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = ['id', 'tags', 'author', 'ingredients',
                   'is_favorited', 'is_in_shopping_cart',
                   'name', 'image', 'text', 'cooking_time']
+        
+    def get_ingredients(self, obj):
+        ingredients = IngredientInRecipe.objects.filter(recipe=obj)
+        return RecipeIngredientSerializer(ingredients, many=True).data
 
     def _is_exist(self, arg0, obj):
         request = self.context.get('request', None)
