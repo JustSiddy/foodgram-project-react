@@ -12,6 +12,14 @@ from recipes.models import (Favorite, Ingredient,
 from users.models import Subscription, User
 
 
+class UserFilterMixin():
+
+    def user_is_on_it(self, user, model, somedict):
+        if user.is_authenticated and model.objects.filter(**somedict).exists():
+            return True
+        return False
+
+
 class CustomUserSerializer(UserCreateSerializer):
     """Сериализер модели юзер."""
     is_subscribed = serializers.SerializerMethodField(read_only=True)
@@ -22,10 +30,12 @@ class CustomUserSerializer(UserCreateSerializer):
         model = User
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Subscription.objects.filter(user=user, author=obj).exists()
+        user = self.context['request'].user
+
+        return self.user_is_on_it(
+            user, Subscription,
+            {'followed': object.pk, 'follower': user}
+        )
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
