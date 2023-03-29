@@ -1,15 +1,15 @@
-from django.contrib.auth import get_user_model
-from django_filters.rest_framework import FilterSet, filters
-from recipes.models import Ingredient, Tag, Recipe
+from django.core.exceptions import ValidationError
+from django_filters import filters
 
-User = get_user_model()
+from users.models import User
+from recipes.models import Tag, Recipe
 
 
-class IngredientFilter(FilterSet):
+class IngredientFilter(filters.FilterSet):
     name = filters.CharFilter('name', 'icontains')
 
 
-class RecipesFilter(FilterSet):
+class RecipesFilter(filters.FilterSet):
     author = filters.CharFilter()
     tags = filters.ModelMultipleChoiceFilter(
         queryset=Tag.objects.all(),
@@ -36,3 +36,21 @@ class RecipesFilter(FilterSet):
         if value:
             return queryset.filter(shopping_cart__user=self.request.user)
         return queryset
+
+
+class TagsMultipleChoiceField(filters.fields.Multiple):
+    def validate(self, value):
+        if self.required and not value:
+            raise ValidationError(
+                self.error_messages['required'],
+                code='required')
+        for val in value:
+            if val in self.choices and not self.valid_value(val):
+                raise ValidationError(
+                    self.error_messages['invalid_choice'],
+                    code='invalid_choice',
+                    params={'value': val},)
+
+
+class TagsFilter(filters.AllValuesMultipleFilter):
+    field_class = TagsMultipleChoiceField
