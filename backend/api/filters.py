@@ -1,17 +1,17 @@
 from django.contrib.auth import get_user_model
-from django_filters.rest_framework import filters
 from django.core.exceptions import ValidationError
-
+from django_filters.rest_framework import FilterSet, filters
+import django_filters as filters
 from recipes.models import Tag, Recipe
 
 User = get_user_model()
 
 
-class IngredientFilter(filters.FilterSet):
+class IngredientFilter(FilterSet):
     name = filters.CharFilter('name', 'icontains')
 
 
-class RecipesFilter(filters.FilterSet):
+class RecipesFilter(FilterSet):
     author = filters.CharFilter()
     tags = filters.ModelMultipleChoiceFilter(
         queryset=Tag.objects.all(),
@@ -40,7 +40,8 @@ class RecipesFilter(filters.FilterSet):
         return queryset
 
 
-class TagsMultipleChoiceField(filters.fields.Multiple):
+class TagsMultipleChoiceField(
+        filters.MultipleChoiceField):
     def validate(self, value):
         if self.required and not value:
             raise ValidationError(
@@ -56,4 +57,3 @@ class TagsMultipleChoiceField(filters.fields.Multiple):
 
 class TagsFilter(filters.AllValuesMultipleFilter):
     field_class = TagsMultipleChoiceField
-
