@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from recipes.models import (Favorites, Ingredient,
                             Recipe, ShoppingCart,
-                            Tags, IngredientInRecipe)
+                            Tag, IngredientInRecipe)
 
 
 class IngredientInRecipe(admin.TabularInline):
@@ -11,10 +11,10 @@ class IngredientInRecipe(admin.TabularInline):
     extra = 1
 
 
-@admin.register(Tags)
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ['name', 'id', 'slug',
-                    'tags', 'color']
+                    'color']
     search_fields = ['name', 'slug']
     empty_value_display = '-пусто-'
 
@@ -28,8 +28,9 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'author', 'favorites']
-    search_fields = ['name', 'author__username']
+    list_display = ['id', 'name', 'author',
+                    'favorite']
+    search_fields = ['name', 'author__username', 'tags']
     inlines = (IngredientInRecipe,)
     empty_value_display = '-пусто-'
 

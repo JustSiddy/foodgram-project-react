@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (Favorites, Ingredient, Recipe,
-                            IngredientInRecipe, ShoppingCart, Tags)
+                            IngredientInRecipe, ShoppingCart, Tag)
 from users.models import Subscription, User
 
 
@@ -37,7 +37,7 @@ class CustomUserSerializer(UserSerializer):
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор просмотра модели Тег."""
     class Meta:
-        model = Tags
+        model = Tag
         fields = ['id', 'name', 'color', 'slug']
 
 
@@ -105,7 +105,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     ingredients = RecipeIngredientSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tags.objects.all(), many=True)
+        queryset=Tag.objects.all(), many=True)
     image = Base64ImageField()
 
     class Meta:
