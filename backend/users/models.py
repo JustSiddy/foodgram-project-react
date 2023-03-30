@@ -7,27 +7,23 @@ from django.db.models import F, Q, UniqueConstraint
 class User(AbstractUser):
     """Модель пользователя."""
     first_name = models.CharField(
-        'Имя',
+        verbose_name='Имя',
         max_length=settings.STRING_FIELD_LENGTH,
         blank=False,
-        verbose_name='first_name',
     )
     last_name = models.CharField(
-        'Фамилия',
+        verbose_name='Фамилия',
         max_length=settings.STRING_FIELD_LENGTH,
         blank=False,
-        verbose_name='last_name',
     )
     username = models.CharField(
-        'Имя пользователя',
+        verbose_name='Имя пользователя',
         max_length=settings.STRING_FIELD_LENGTH,
-        verbose_name='username',
     )
     email = models.EmailField(
-        'Почта',
+        verbose_name='Почта',
         max_length=settings.EMAIL_FIELD_LENGTH,
-        unique=True,
-        verbose_name='e-mail')
+        unique=True,)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
