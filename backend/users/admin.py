@@ -12,6 +12,14 @@ class UserAdmin(UserAdmin):
     search_fields = ('email', 'username')
     empty_value_display = '-пусто-'
 
+    def get_recipes_count(self, obj):
+        return obj.recipe.count()
+    get_recipes_count.short_description = 'Рецепты'
+
+    def get_followers_count(self, obj):
+        return obj.user.count()
+    get_followers_count.short_description = 'Подписчики'
+
 
 @admin.register(Subscription)
 class SubscriptionsAdmin(admin.ModelAdmin):
