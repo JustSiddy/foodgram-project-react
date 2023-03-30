@@ -2,8 +2,7 @@ from csv import reader
 
 from django.core.management import BaseCommand
 
-from recipes.models import Ingredient,  Tags
-
+from recipes.models import Ingredient
 
 class Command(BaseCommand):
     help = 'Load ingredients data from csv-file to DB.'
