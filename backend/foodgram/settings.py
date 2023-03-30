@@ -14,7 +14,9 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = [os.getenv('HOSTS', default='*')]
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', default='*')]
+
+CSRF_TRUSTED_ORIGINS = ['http://158.160.3.114']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -131,6 +133,7 @@ REST_FRAMEWORK = {
 DJOSER = {
     'SERIALIZERS': {
         'user': 'api.serializers.CustomUserSerializer',
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
     },
     'PERMISSIONS': {
