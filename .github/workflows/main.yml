@@ -58,7 +58,7 @@ jobs:
           script: |
             sudo docker-compose stop
             sudo docker-compose rm backend
-            sudo docker-compose pull backend
+            sudo docker-compose pull  ${{ secrets.DOCKER_USERNAME }}/backend:v1.0
             sudo docker-compose rm frontend
             sudo docker-compose pull frontend
             rm -f .env
