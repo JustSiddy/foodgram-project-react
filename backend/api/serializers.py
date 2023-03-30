@@ -120,8 +120,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 ingredient=get_object_or_404(
                     Ingredient, pk=ingredient.get('id').id),
                 recipe=recipe,
-                amount=ingredient.get('amount'),
-             )
+                amount=ingredient.get('amount'))
             for ingredient in ingredients
         ]
         ingredient_list.sort(key=(lambda item: item.ingredient.name))

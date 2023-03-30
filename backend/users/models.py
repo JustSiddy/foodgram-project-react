@@ -10,18 +10,18 @@ class User(AbstractUser):
         'Имя',
         max_length=settings.STRING_FIELD_LENGTH,
         blank=False,
-        verbose_name='first_name'
+        verbose_name='first_name',
     )
     last_name = models.CharField(
         'Фамилия',
         max_length=settings.STRING_FIELD_LENGTH,
         blank=False,
-        verbose_name='last_name'
+        verbose_name='last_name',
     )
     username = models.CharField(
         'Имя пользователя',
         max_length=settings.STRING_FIELD_LENGTH,
-        verbose_name='username'
+        verbose_name='username',
     )
     email = models.EmailField(
         'Почта',
@@ -64,9 +64,7 @@ class Subscription(models.Model):
             ),
             models.CheckConstraint(
                 check=~Q(user=F('author')),
-                name='no_self_follow'
-            )
-        ]
+                name='no_self_follow')]
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}'
