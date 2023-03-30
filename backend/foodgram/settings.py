@@ -12,12 +12,15 @@ SECRET_KEY = os.getenv(
     'SECRET_KEY',
     default='7%dd60q-m#8h-$f67rrq8#565(_me9==-lx7s2*btrbjkr%lgo')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ['158.160.3.114', 'backend',
-                 '127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = ['http://158.160.3.114']
+HOST_IP = os.getenv('HOSTS', None)
+
+if HOST_IP:
+    CSRF_TRUSTED_ORIGINS = [f'http://{HOST_IP}']
+    ALLOWED_HOSTS = HOST_IP
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -122,10 +125,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AUTH_USER_MODEL = 'users.User'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -147,3 +146,10 @@ DJOSER = {
     },
     'HIDE_USERS': False,
 }
+
+AUTH_USER_MODEL = 'users.User'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_FIELD_LENGTH = 254
+STRING_FIELD_LENGTH = 150
