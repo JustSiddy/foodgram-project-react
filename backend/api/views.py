@@ -20,7 +20,7 @@ from api.serializers import (CreateRecipeSerializer, FavoriteSerializer,
                              SubscriptionSerializer, TagSerializer)
 
 from recipes.models import (Favorites, Ingredient, Recipe, IngredientInRecipe,
-                            ShoppingCart, Tag)
+                            ShoppingCart, Tags)
 
 from users.models import Subscription, User
 
@@ -69,7 +69,7 @@ class ShowSubscriptionsView(ListAPIView):
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Отображение тегов."""
-    queryset = Tag.objects.all()
+    queryset = Tags.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
     permission_classes = (IsAuthenticatedOrReadOnly,)
