@@ -6,7 +6,6 @@ load_dotenv()
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_ROOT = os.path.join(BASE_DIR, 'data')
 
 
 SECRET_KEY = os.getenv(
@@ -134,7 +133,6 @@ REST_FRAMEWORK = {
 DJOSER = {
     'SERIALIZERS': {
         'user': 'api.serializers.CustomUserSerializer',
-        'user_create': 'api.serializers.CustomUserCreateSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
     },
     'PERMISSIONS': {
