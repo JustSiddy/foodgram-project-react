@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ['backend']
+ALLOWED_HOSTS = ['*', 'backend']
 
 HOST_IP = os.getenv('HOSTS_ALLOWED', None)
 
