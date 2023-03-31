@@ -18,7 +18,7 @@ class Command(BaseCommand):
                     Ingredient.objects.get_or_create(
                         name=row[0], measurement_unit=row[1],
                     )
-        self.stdout.write(self.style.SUCCESS('Ингредиенты загружены'))
+        self.stdout.write(self.style.SUCCESS('Ингредиенты загружены.'))
         
         with open(
                 'recipes/data/tags.csv', 'r',
@@ -29,4 +29,4 @@ class Command(BaseCommand):
                     Tags.objects.get_or_create(
                         name=row[0], color=row[1], slug=row[2],
                     )
-        self.stdout.write(self.style.SUCCESS('Теги загружены'))
+        self.stdout.write(self.style.SUCCESS('Теги загружены.'))
