@@ -15,13 +15,9 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ['*', 'backend']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', default='*')]
 
-HOST_IP = os.getenv('HOSTS_ALLOWED', None)
-
-if HOST_IP:
-    CSRF_TRUSTED_ORIGINS = [f'http://{HOST_IP}']
-    ALLOWED_HOSTS = [HOST_IP]
+CSRF_TRUSTED_ORIGINS = ['http://158.160.3.114']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
