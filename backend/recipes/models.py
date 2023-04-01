@@ -132,7 +132,7 @@ class FavoriteShoppingCartModel(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=['user', 'recipe'],
-                name='unique_user_recipe'),
+                name='unique_favorite_shopping_cart'),
         ]
 
     def __str__(self):
