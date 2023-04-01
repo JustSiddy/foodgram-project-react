@@ -22,7 +22,7 @@ class CustomUserSerializer(UserSerializer):
         request = self.context.get('request')
         return (
             request.is_authenticated
-            and request.follower.filter(author=obj.id).exists()
+            and request.follower.filter(user=request, author=obj.id).exists()
         )
     
     def create(self, validated_data):
@@ -242,7 +242,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         return (
             request.is_authenticated
-            and request.follower.filter(author=obj.id).exists()
+            and request.follower.filter(user=request, author=obj.id).exists()
         )
 
     def get_recipes(self, obj):
