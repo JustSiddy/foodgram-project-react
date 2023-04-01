@@ -14,10 +14,11 @@ class Command(BaseCommand):
                 encoding='UTF-8'
         ) as ingredients:
             for row in reader(ingredients):
-                if len(row) == 2:
-                    Ingredient.objects.get_or_create(
-                        name=row[0], measurement_unit=row[1],
-                    )
+                name = row
+                measurement_unit = row
+                Ingredient.objects.get_or_create(
+                    name=name[0], measurement_unit=measurement_unit[1],
+                )
         self.stdout.write(self.style.SUCCESS('Ингредиенты загружены.'))
         
         with open(
@@ -25,8 +26,10 @@ class Command(BaseCommand):
                 encoding='UTF-8'
         ) as tags:
             for row in reader(tags):
-                if len(row) == 3:
-                    Tags.objects.get_or_create(
-                        name=row[0], color=row[1], slug=row[2],
-                    )
+                name = row
+                color = row
+                slug = row
+                Tags.objects.get_or_create(
+                    name=name[0], color=color[1], slug=slug[2],
+                )
         self.stdout.write(self.style.SUCCESS('Теги загружены.'))
