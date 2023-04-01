@@ -30,6 +30,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'author',
                     'favorite']
+    list_filter = ['author', 'name', 'tags']
     search_fields = ['name', 'author__username', 'tags']
     inlines = (IngredientInRecipe,)
     empty_value_display = '-пусто-'
@@ -37,6 +38,10 @@ class RecipeAdmin(admin.ModelAdmin):
     def get_favorites(self, obj):
         return obj.favorites.count()
     get_favorites.short_description = 'Избранное'
+
+    def get_ingredients(self, obj):
+        ingredients = obj.ingredients.all().value_list('name', flat=True)
+        return ', '.join(ingredients)
 
 
 @admin.register(Favorites)

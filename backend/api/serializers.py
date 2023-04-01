@@ -18,9 +18,9 @@ class CustomUserSerializer(UserSerializer):
                   'last_name', 'is_subscribed']
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        return user.is_authenticated and Subscription.objects.filter(
-            user=user, author=obj.id).exists()
+        request = self.context.get('request').user
+        return (request.user.is_authenticated 
+                and request.user.related_name.filter(author=obj.id).exists())
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -72,8 +72,9 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def _is_exist(self, arg0, obj):
         request = self.context.get('request', None)
-        return request.user.is_authenticated and Subscription.objects.filter(
-            user=request.user, author=obj.id).exists()
+        return arg0.objects.filter(
+            request.user.is_authenticated, 
+            recipe=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
         return self._is_exist(ShoppingCart, obj)
@@ -103,8 +104,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     def set_recipe_ingredient(ingredients, recipe):
         ingredient_list = [
             IngredientInRecipe(
-                ingredient=ingredient.get(
-                    Ingredient, pk=ingredient.get('id').id),
+                ingredient=ingredient.get('id'),
                 recipe=recipe,
                 amount=ingredient.get('amount'))
             for ingredient in ingredients
@@ -112,12 +112,17 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         ingredient_list.sort(key=(lambda item: item.ingredient.name))
         IngredientInRecipe.objects.bulk_create(ingredient_list)
     
-    def validate_tags(self, tags):
+    def validate_tags(self, data):
+        tags= data['tags']
+        if not tags:
+            raise serializers.ValidationError(
+                'Для рецепта нужен хотя бы 1 тег')
+        tags_set = set()
         for tag in tags:
-            if not Tags.objects.filter(id=tag.id).exists():
+            if tag in tags_set:
                 raise serializers.ValidationError(
-                    'Указанного тега не существует')
-        return tags
+                    'Данный тег существует. Измените тег'
+                )
     
     def validate_ingredients(self, ingredients):
         ingredients_list = []
@@ -222,9 +227,9 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
                   'recipes_count']
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        return user.is_authenticated and Subscription.objects.filter(
-            user=user, author=obj.id).exists()
+        request = self.context.get('request').user
+        return (request.user.is_authenticated 
+                and request.user.related_name.filter(author=obj.id).exists())
 
     def get_recipes(self, obj):
         request = self.context.get('request')
