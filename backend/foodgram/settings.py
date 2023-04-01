@@ -17,7 +17,7 @@ DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ['158.160.3.114', 'backend', '127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = ['158.160.3.114']
+CSRF_TRUSTED_ORIGINS = ['http://158.160.3.114']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
