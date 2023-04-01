@@ -19,7 +19,7 @@ ALLOWED_HOSTS = ['backend', '127.0.0.1']
 
 HOSTS = os.getenv('HOSTS', None)
 
-CSRF_TRUSTED_ORIGINS = [f'http://{HOSTS}']
+CSRF_TRUSTED_ORIGINS = ['158.160.3.114']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
