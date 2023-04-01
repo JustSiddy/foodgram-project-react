@@ -129,11 +129,11 @@ class FavoriteShoppingCartModel(models.Model):
 
     class Meta:
         abstract = True
-        constraints = [
-            UniqueConstraint(
-                fields=['user', 'recipe'],
-                name='%(app_label)s_%(class)s_unique'),
-        ]
+        #constraints = [
+            #UniqueConstraint(
+                #fields=['user', 'recipe'],
+                #name='%(app_label)s_%(class)s_unique'),
+        #]
 
     def __str__(self):
         return f'Пользователь {self.user}, рецепт {self.recipe}'
