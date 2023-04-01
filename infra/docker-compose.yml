@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: justs1ddy/backend:v1.0
+    image: justs1ddy/backend:v1.1
     restart: always
     volumes:
       - static_value:/foodgram/static/
