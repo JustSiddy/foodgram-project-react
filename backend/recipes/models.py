@@ -111,7 +111,7 @@ class IngredientInRecipe(models.Model):
                 fields=['recipe', 'ingredient'],
                 name='unique_recipes_ingredient'),
         ]
-    
+
     def __str__(self):
         return f'Ингредиент {self.ingredient} в рецепте {self.recipe}'
 
@@ -142,15 +142,15 @@ class FavoriteShoppingCartModel(models.Model):
 class Favorites(FavoriteShoppingCartModel):
     """Модель избранных рецептов."""
     class Meta(FavoriteShoppingCartModel.Meta):
-        verbose_name='Избранное'
-        default_related_name='favorite'
+        verbose_name = 'Избранное'
+        default_related_name = 'favorite'
 
 
 class ShoppingCart(FavoriteShoppingCartModel):
     """Модель поукпок."""
     class Meta(FavoriteShoppingCartModel.Meta):
-        verbose_name='Список покупок'
-        default_related_name='shopping_cart'
+        verbose_name = 'Список покупок'
+        default_related_name = 'shopping_cart'
 
 
 class RecipeTag(models.Model):
@@ -171,6 +171,6 @@ class RecipeTag(models.Model):
                 fields=['recipe', 'tags'],
                 name='recipe_tag_unique'),
         ]
-    
+
     def __str__(self):
         return f'Тег {self.tag} в рецепте {self.recipe}'

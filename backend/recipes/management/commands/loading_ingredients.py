@@ -2,7 +2,7 @@ from csv import reader
 
 from django.core.management import BaseCommand
 
-from recipes.models import Ingredient,  Tags
+from recipes.models import Ingredient, Tags
 
 
 class Command(BaseCommand):
@@ -11,8 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         with open(
                 'recipes/data/ingredients.csv', 'r',
-                encoding='UTF-8'
-        ) as ingredients:
+                encoding='UTF-8') as ingredients:
             for row in reader(ingredients):
                 name = row
                 measurement_unit = row
@@ -20,11 +19,10 @@ class Command(BaseCommand):
                     name=name, measurement_unit=measurement_unit,
                 )
         self.stdout.write(self.style.SUCCESS('Ингредиенты загружены.'))
-        
+
         with open(
                 'recipes/data/tags.csv', 'r',
-                encoding='UTF-8'
-        ) as tags:
+                encoding='UTF-8') as tags:
             for row in reader(tags):
                 name = row
                 color = row
