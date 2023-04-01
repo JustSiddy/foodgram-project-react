@@ -26,15 +26,6 @@ from recipes.models import (Favorites, Ingredient, Recipe, IngredientInRecipe,
 from users.models import Subscription, User
 
 
-class UsersViewSet(UserViewSet):
-    pagination_class = LimitPageNumberPagination
-
-    @action(['get'], detail=False, permission_classes=[IsAuthenticated])
-    def me(self, request, *args, **kwargs):
-        self.get_object = self.get_instance
-        return self.retrieve(request, *args, **kwargs)
-
-
 class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]

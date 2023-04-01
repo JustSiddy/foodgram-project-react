@@ -17,7 +17,7 @@ DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ['backend', '127.0.0.1']
 
-HOSTS = os.getenv('HOSTS', None)
+HOSTS = [os.getenv('HOSTS', None)]
 
 if HOSTS:
     CSRF_TRUSTED_ORIGINS = [f'http://{HOSTS}']
@@ -138,6 +138,7 @@ REST_FRAMEWORK = {
 DJOSER = {
     'SERIALIZERS': {
         'user': 'api.serializers.CustomUserSerializer',
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
     },
     'PERMISSIONS': {

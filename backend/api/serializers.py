@@ -1,4 +1,4 @@
-from djoser.serializers import UserSerializer
+from djoser.serializers import UserCreateSerializer, UserSerializer 
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -7,6 +7,14 @@ from recipes.models import (Favorites, Ingredient, Recipe,
                             IngredientInRecipe, ShoppingCart, Tags)
 
 from users.models import Subscription, User
+
+
+class CustomUserCreateSerializer(UserCreateSerializer): 
+    """Сериализатор создания пользователя.""" 
+    class Meta: 
+        model = User 
+        fields = ['email', 'username', 'first_name', 
+                  'last_name', 'password']
 
 
 class CustomUserSerializer(UserSerializer):
