@@ -16,7 +16,9 @@ SECRET_KEY = os.getenv(
 DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ['158.160.3.114', 'backend', 
-                 '127.0.0.1'] 
+                 '127.0.0.1']
+#никак не смог перекинуть все в енв файл
+#чтобы оно не конфликтовало с админкой
  
 CSRF_TRUSTED_ORIGINS = ['http://158.160.3.114'] 
 
@@ -135,7 +137,6 @@ REST_FRAMEWORK = {
 DJOSER = {
     'SERIALIZERS': {
         'user': 'api.serializers.CustomUserSerializer',
-        'user_create': 'api.serializers.CustomUserCreateSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
     },
     'PERMISSIONS': {
