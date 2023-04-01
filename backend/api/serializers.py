@@ -33,8 +33,8 @@ class CustomUserSerializer(UserSerializer):
         
         #это вариант с релейтед неймом, который никак не получилось заставить работать
         return (
-            request.is_authenticated
-            and request.follower.filter(user=request.user, author=obj.id).exists()
+            request.user.is_authenticated
+            and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
         )
 
 
@@ -244,8 +244,8 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
         #    user=request, author=obj.id).exists()
     
         return (
-            request.is_authenticated
-            and request.follower.filter(user=request.user, author=obj.id).exists()
+            request.user.is_authenticated
+            and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
         )
 
 
