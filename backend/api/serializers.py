@@ -20,7 +20,7 @@ class CustomUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get('request').user
         return (request.user.is_authenticated
-                and request.user.related_name.filter(author=obj.id).exists())
+                and request.related_name.filter(author=obj.id).exists())
 
 
 class TagSerializer(serializers.ModelSerializer):
