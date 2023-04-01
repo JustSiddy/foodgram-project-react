@@ -17,7 +17,7 @@ DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ['backend', '127.0.0.1']
 
-HOSTS = (os.getenv('HOSTS', None))
+HOSTS = os.getenv('HOSTS', None)
 
 CSRF_TRUSTED_ORIGINS = [f'http://{HOSTS}']
 
