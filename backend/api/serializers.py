@@ -27,7 +27,7 @@ class CustomUserSerializer(UserSerializer):
                   'last_name', 'is_subscribed']
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
+        request = self.context.get('request').user
         return request.is_authenticated and Subscription.objects.filter( 
             user=request.user, author=obj.id).exists()
         
@@ -239,7 +239,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
                   'recipes_count']
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
+        request = self.context.get('request').user
         return request.is_authenticated and Subscription.objects.filter( 
             user=request.user, author=obj.id).exists()
         
