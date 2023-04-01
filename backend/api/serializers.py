@@ -31,11 +31,11 @@ class CustomUserSerializer(UserSerializer):
         return request.is_authenticated and Subscription.objects.filter( 
             user=request.user, author=obj.id).exists()
         
-        #это вариант с релейтед неймом, который никак не получилось заставить работать
-        #return (
-        #    request.user.is_authenticated
-        #    and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
-        #)
+        #   это вариант с релейтед неймом, который никак не получилось заставить работать
+        #   return (
+        #       request.user.is_authenticated
+        #       and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
+        #   )
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -243,11 +243,11 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
         return request.is_authenticated and Subscription.objects.filter( 
             user=request.user, author=obj.id).exists()
         
-        #это вариант с релейтед неймом, который никак не получилось заставить работать
-        #return (
-        #    request.user.is_authenticated
-        #    and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
-        #)
+        #   это вариант с релейтед неймом, который никак не получилось заставить работать
+        #   return (
+        #       request.user.is_authenticated
+        #       and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
+        #   )
 
 
     def get_recipes(self, obj):
