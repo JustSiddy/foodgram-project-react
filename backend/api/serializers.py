@@ -18,10 +18,10 @@ class CustomUserSerializer(UserSerializer):
                   'last_name', 'is_subscribed'] 
  
     def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        if not user.is_authenticated:
+        request = self.context['request'].user
+        if not request.is_authenticated:
             return False
-        return user.follower.filter(author=obj).exists() 
+        return request.follower.filter(author=obj).exists() 
  
  
 class TagSerializer(serializers.ModelSerializer): 
@@ -224,21 +224,20 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
                   'recipes_count'] 
  
     def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        if not user.is_authenticated:
+        request = self.context['request'].user
+        if not request.is_authenticated:
             return False
-        return user.follower.filter(author=obj).exists()
+        return request.follower.filter(author=obj).exists()
  
     def get_recipes(self, obj): 
-        request = self.context.get('request') 
-        if not request or request.user.is_anonymous: 
-            return False 
-        recipes = obj.recipes.all() 
-        limit = request.query_params.get('recipes_limit') 
-        if limit: 
-            recipes = recipes[:int(limit)] 
-        return ShowFavoriteSerializer( 
-            recipes, many=True, context={'request': request}).data 
+        request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
+        recipes = (
+            obj.author.recipe.all()[:int(limit)] if limit
+            else obj.author.recipe.all())
+        return ShowFavoriteSerializer(
+            recipes,
+            many=True).data
  
     def get_recipes_count(self, obj): 
         return obj.recipes.count() 
