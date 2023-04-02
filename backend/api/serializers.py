@@ -17,10 +17,11 @@ class CustomUserSerializer(UserSerializer):
         fields = ['id', 'email', 'username', 'first_name', 
                   'last_name', 'is_subscribed'] 
  
-    def get_is_subscribed(self, obj): 
-        user = self.context.get('request').user 
-        return user.is_authenticated and Subscription.objects.filter( 
-            user=user, author=obj.id).exists() 
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return user.follower.filter(author=obj).exists() 
  
  
 class TagSerializer(serializers.ModelSerializer): 
@@ -70,10 +71,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients = IngredientInRecipe.objects.filter(recipe=obj) 
         return RecipeIngredientSerializer(ingredients, many=True).data 
  
-    def _is_exist(self, arg0, obj): 
-        request = self.context.get('request', None) 
-        return request.user.is_authenticated and Subscription.objects.filter( 
-            user=request.user, author=obj.id).exists() 
+    def _is_exist(self, arg0, obj):
+        request = self.context.get('request').user
+        return arg0.objects.filter(
+            request.user.is_authenticated,
+            recipe=obj.id).exists() 
  
     def get_is_in_shopping_cart(self, obj): 
         return self._is_exist(ShoppingCart, obj) 
@@ -221,10 +223,11 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
                   'is_subscribed', 'recipes', 
                   'recipes_count'] 
  
-    def get_is_subscribed(self, obj): 
-        user = self.context.get('request').user 
-        return user.is_authenticated and Subscription.objects.filter( 
-            user=user, author=obj.id).exists() 
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            return False
+        return user.follower.filter(author=obj).exists()
  
     def get_recipes(self, obj): 
         request = self.context.get('request') 
