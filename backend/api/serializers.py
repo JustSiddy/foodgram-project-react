@@ -28,16 +28,16 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj): 
         request = self.context.get('request') 
-        if request is None or request.user.is_anonymous: 
-            return False 
-        return Subscription.objects.filter( 
-            user=request.user, author=obj).exists()
+        if request is None or request.user.is_anonymous:
+    #        return False 
+    #    return Subscription.objects.filter( 
+    #        user=request.user, author=obj).exists()
         
         #   это вариант с релейтед неймом, который никак не получилось заставить работать
-        #   return (
-        #       request.user.is_authenticated
-        #       and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
-        #   )
+            return (
+                request.user.is_authenticated
+                and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
+            )
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -243,16 +243,16 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj): 
         request = self.context.get('request') 
-        if request is None or request.user.is_anonymous: 
-            return False 
-        return Subscription.objects.filter( 
-            user=request.user, author=obj).exists()
+        if request is None or request.user.is_anonymous:
+    #        return False 
+    #    return Subscription.objects.filter( 
+    #        user=request.user, author=obj).exists()
         
         #   это вариант с релейтед неймом, который никак не получилось заставить работать
-        #   return (
-        #       request.user.is_authenticated
-        #       and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
-        #   )
+            return (
+                request.user.is_authenticated
+                and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
+            )
 
 
     def get_recipes(self, obj):
