@@ -101,19 +101,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ['id', 'author', 'ingredients', 'tags',
                   'image', 'name', 'text', 'cooking_time']
-
-    @staticmethod
-    def set_recipe_ingredient(ingredients, recipe):
-        ingredient_list = [
-            IngredientInRecipe(
-                ingredient=ingredient.get('id'),
-                recipe=recipe,
-                amount=ingredient.get('amount'))
-            for ingredient in ingredients
-        ]
-        ingredient_list.sort(key=(lambda item: item.ingredient.name))
-        IngredientInRecipe.objects.bulk_create(ingredient_list)
-
+    
     def validate_tags(self, value):
         tags_list = []
         for tag in value:
@@ -147,6 +135,18 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Время готовки должно быть не меньше одной минуты')
         return cooking_time
+
+    @staticmethod
+    def set_recipe_ingredient(ingredients, recipe):
+        ingredient_list = [
+            IngredientInRecipe(
+                ingredient=ingredient.get('id'),
+                recipe=recipe,
+                amount=ingredient.get('amount'))
+            for ingredient in ingredients
+        ]
+        ingredient_list.sort(key=(lambda item: item.ingredient.name))
+        IngredientInRecipe.objects.bulk_create(ingredient_list)
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
