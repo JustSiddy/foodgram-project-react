@@ -89,7 +89,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def _is_exist(self, arg0, obj):
         request = self.context.get('request', None)
-        current_user = request.user
         return arg0.objects.filter(
             request.user.is_authenticated,
             recipe=obj.id).exists()
@@ -130,20 +129,16 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         ingredient_list.sort(key=(lambda item: item.ingredient.name))
         IngredientInRecipe.objects.bulk_create(ingredient_list)
 
-    def validate_tags(self, value):
-        tags = value
-        if not tags:
-            raise serializers.ValidationError({
-                'tags': 'Нужно выбрать хотя бы один тег!'
-            })
+    def validate_tags(self, tags):
         tags_list = []
+        if not tags:
+            raise serializers.ValidationError(
+                'Необходим как минимум 1 тег')
         for tag in tags:
-            if tag in tags_list:
-                raise serializers.ValidationError({
-                    'tags': 'Теги должны быть уникальными!'
-                })
-            tags_list.append(tag)
-        return value
+            if tag['id'] in tags_list:
+                raise serializers.ValidationError(
+                    'Теги должны быть уникальны')
+            tags_list.append(tag['id'])
 
     def validate_ingredients(self, ingredients):
         ingredients_list = []
