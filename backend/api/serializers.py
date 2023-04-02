@@ -124,17 +124,15 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         ingredient_list.sort(key=(lambda item: item.ingredient.name))
         IngredientInRecipe.objects.bulk_create(ingredient_list)
 
-    def validate_tags(self, value):
-        if len(value) ==0:
+    def validate_tags(self, data):
+        tags = data.get('tags')
+        if not tags:
             raise serializers.ValidationError(
-                'У рецепта должен быть хотя бы 1 тег.'
-            )
-        tags_id = [tag.id for tag in value]
-        unique_tag_id = set(tags_id)
-        if len(unique_tag_id) != len(tags_id):
-            raise serializers.ValidationError(
-                'Тег не уникален.'
-            )
+                'Нужен хотя бы один тег')
+        for tag in tags:
+            if not Tags.objects.filter(slug=tag).exists():
+                raise serializers.ValidationError(
+                    'Тег не существует')
 
     def validate_ingredients(self, ingredients):
         ingredients_list = []
