@@ -130,7 +130,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         IngredientInRecipe.objects.bulk_create(ingredient_list)
 
     def validate_ingredients(self, ingredients):
-        ingredients_list = []
+        ingredients_list = list['ingredients']
         if not ingredients:
             raise serializers.ValidationError(
                 'Отсутствуют ингридиенты')
