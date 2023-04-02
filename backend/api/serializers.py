@@ -29,11 +29,6 @@ class CustomUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj): 
         request = self.context.get('request') 
         if request is None or request.user.is_anonymous:
-    #        return False 
-    #    return Subscription.objects.filter( 
-    #        user=request.user, author=obj).exists()
-        
-        #   это вариант с релейтед неймом, который никак не получилось заставить работать
             return (
                 request.user.is_authenticated
                 and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
@@ -128,6 +123,18 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         ]
         ingredient_list.sort(key=(lambda item: item.ingredient.name))
         IngredientInRecipe.objects.bulk_create(ingredient_list)
+
+    def validate_tags(self, value):
+        if len(value) ==0:
+            raise serializers.ValidationError(
+                'У рецепта должен быть хотя бы 1 тег.'
+            )
+        tags_id = [tag.id for tag in value]
+        unique_tag_id = set(tags_id)
+        if len(unique_tag_id) != len(tags_id):
+            raise serializers.ValidationError(
+                'Тег не уникален.'
+            )
 
     def validate_ingredients(self, ingredients):
         ingredients_list = list['ingredients']
@@ -232,11 +239,6 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj): 
         request = self.context.get('request') 
         if request is None or request.user.is_anonymous:
-    #        return False 
-    #    return Subscription.objects.filter( 
-    #        user=request.user, author=obj).exists()
-        
-        #   это вариант с релейтед неймом, который никак не получилось заставить работать
             return (
                 request.user.is_authenticated
                 and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
