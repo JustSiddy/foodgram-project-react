@@ -26,12 +26,12 @@ class CustomUserSerializer(UserSerializer):
         fields = ['id', 'email', 'username', 'first_name',
                   'last_name', 'is_subscribed']
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request').user
-        if request is None or request.user.is_authenticated:
-            return False
+    def get_is_subscribed(self, obj): 
+        request = self.context.get('request') 
+        if request is None or request.user.is_anonymous: 
+            return False 
         return Subscription.objects.filter( 
-            user=request.user, author=obj.id).exists()
+            user=request.user, author=obj).exists()
         
         #   это вариант с релейтед неймом, который никак не получилось заставить работать
         #   return (
@@ -241,12 +241,12 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
                   'is_subscribed', 'recipes',
                   'recipes_count']
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request').user
-        if request is None or request.user.is_authenticated:
-            return False
+    def get_is_subscribed(self, obj): 
+        request = self.context.get('request') 
+        if request is None or request.user.is_anonymous: 
+            return False 
         return Subscription.objects.filter( 
-            user=request.user, author=obj.id).exists()
+            user=request.user, author=obj).exists()
         
         #   это вариант с релейтед неймом, который никак не получилось заставить работать
         #   return (
