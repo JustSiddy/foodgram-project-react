@@ -1,4 +1,4 @@
-from djoser.serializers import UserSerializer #UserCreateSerializer
+from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -7,14 +7,6 @@ from recipes.models import (Favorites, Ingredient, Recipe,
                             IngredientInRecipe, ShoppingCart, Tags)
 
 from users.models import Subscription, User
-
-
-# class CustomUserCreateSerializer(UserCreateSerializer): 
-#     """Сериализатор создания пользователя.""" 
-#     class Meta: 
-#         model = User 
-#         fields = ['email', 'username', 'first_name', 
-#                   'last_name', 'password']
 
 
 class CustomUserSerializer(UserSerializer):
@@ -31,7 +23,7 @@ class CustomUserSerializer(UserSerializer):
         if request is None or request.user.is_anonymous:
             return (
                 request.user.is_authenticated
-                and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
+                and request.user.follower.filter(user=request.user, author=obj.id).exists()
             )
 
 
@@ -242,7 +234,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
         if request is None or request.user.is_anonymous:
             return (
                 request.user.is_authenticated
-                and request.user.follower.filter(user=request.user.user, author=obj.id).exists()
+                and request.user.follower.filter(user=request.user, author=obj.id).exists()
             )
 
 
