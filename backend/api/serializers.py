@@ -9,10 +9,12 @@ from recipes.models import (Favorites, Ingredient, Recipe,
 from users.models import Subscription, User
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'id', 'first_name', 'last_name')
+class CustomUserCreateSerializer(UserCreateSerializer): 
+    """Сериализатор создания пользователя.""" 
+    class Meta: 
+        model = User 
+        fields = ['email', 'username', 'first_name', 
+                  'last_name', 'password']
 
 
 class CustomUserSerializer(UserSerializer):
@@ -27,8 +29,9 @@ class CustomUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get('request').user
         if request is None or request.user.is_authenticated:
-            return (request.user.is_authenticated and Subscription.objects.filter( 
-                user=request.user, author=obj.id).exists())
+            return False
+        return Subscription.objects.filter( 
+            user=request.user, author=obj.id).exists()
         
         #   это вариант с релейтед неймом, который никак не получилось заставить работать
         #   return (
@@ -86,6 +89,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def _is_exist(self, arg0, obj):
         request = self.context.get('request', None)
+        current_user = request.user
         return arg0.objects.filter(
             request.user.is_authenticated,
             recipe=obj.id).exists()
@@ -240,8 +244,9 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get('request').user
         if request is None or request.user.is_authenticated:
-            return (request.user.is_authenticated and Subscription.objects.filter( 
-                user=request.user, author=obj.id).exists())
+            return False
+        return Subscription.objects.filter( 
+            user=request.user, author=obj.id).exists()
         
         #   это вариант с релейтед неймом, который никак не получилось заставить работать
         #   return (
