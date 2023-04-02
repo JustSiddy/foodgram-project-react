@@ -125,7 +125,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         IngredientInRecipe.objects.bulk_create(ingredient_list)
 
     def validate_tags(self, data):
-        tags = data.get('tags')
+        tags = data('tags')
         if not tags:
             raise serializers.ValidationError(
                 'Нужен хотя бы один тег')
