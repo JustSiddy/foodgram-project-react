@@ -9,12 +9,10 @@ from recipes.models import (Favorites, Ingredient, Recipe,
 from users.models import Subscription, User
 
 
-class CustomUserCreateSerializer(UserCreateSerializer): 
-    """Сериализатор создания пользователя.""" 
-    class Meta: 
-        model = User 
-        fields = ['email', 'username', 'first_name', 
-                  'last_name', 'password']
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'id', 'first_name', 'last_name')
 
 
 class CustomUserSerializer(UserSerializer):
