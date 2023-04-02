@@ -27,8 +27,8 @@ class CustomUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get('request').user
         if request is None or request.user.is_authenticated:
-            return request.user.is_authenticated and Subscription.objects.filter( 
-                user=request.user, author=obj.id).exists()
+            return (request.user.is_authenticated and Subscription.objects.filter( 
+                user=request.user, author=obj.id).exists())
         
         #   это вариант с релейтед неймом, который никак не получилось заставить работать
         #   return (
