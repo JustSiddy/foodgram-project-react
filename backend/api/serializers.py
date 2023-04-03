@@ -18,7 +18,7 @@ class CustomUserSerializer(UserSerializer):
                   'last_name', 'is_subscribed'] 
  
     def get_is_subscribed(self, obj):
-        request = self.context('request')
+        request = self.context['request']
         if request is None or request.user.is_authenticated:
             return request.follower.filter(author=obj).exists()
  
@@ -228,7 +228,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
             return request.follower.filter(author=obj).exists()
  
     def get_recipes(self, obj): 
-        request = self.context.get('request')
+        request = self.context.get['request']
         limit = request.GET.get('recipes_limit')
         recipes = (
             obj.author.recipe.all()[:int(limit)] if limit
