@@ -73,7 +73,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Отображение ингредиентов."""
-    queryset = Ingredient.objects.all()
+    queryset = Recipe.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     search_fields = ['^name']

@@ -29,7 +29,7 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'author',
-                    'get_favorite']
+                    'get_favorites']
     list_filter = ['author', 'name', 'tags']
     search_fields = ['name', 'author__username', 'tags']
     inlines = (IngredientInRecipe,)
