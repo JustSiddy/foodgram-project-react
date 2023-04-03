@@ -19,10 +19,10 @@ class CustomUserSerializer(UserSerializer):
  
     def get_is_subscribed(self, obj):
         request = self.context['request']
-        if request is None or request.user.is_anonymous:
+        if request is None or request.user.is_authenticated:
             return request.follower.filter(
                 user=request.user, author=obj).exists()
- 
+
  
 class TagSerializer(serializers.ModelSerializer): 
     """Сериализатор просмотра модели Тег.""" 
@@ -225,7 +225,7 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
  
     def get_is_subscribed(self, obj):
         request = self.context['request']
-        if request is None or request.user.is_anonymous:
+        if request is None or request.user.is_authenticated:
             return request.follower.filter(
                 user=request.user, author=obj).exists()
  
