@@ -20,7 +20,8 @@ class CustomUserSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         request = self.context['request']
         if request is None or request.user.is_authenticated:
-            return request.follower.filter(author=obj).exists()
+            return request.follower.filter(
+                user=request.user, author=obj).exists()
  
  
 class TagSerializer(serializers.ModelSerializer): 
@@ -223,9 +224,10 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
                   'recipes_count'] 
  
     def get_is_subscribed(self, obj):
-        request = self.context('request')
+        request = self.context['request']
         if request is None or request.user.is_authenticated:
-            return request.follower.filter(author=obj).exists()
+            return request.follower.filter(
+                user=request.user, author=obj).exists()
  
     def get_recipes(self, obj): 
         request = self.context.get['request']
