@@ -61,7 +61,7 @@ class Subscription(models.Model):
             models.CheckConstraint(
                 check=~Q(user=F('author')),
                 name='no_self_follow')]
-        ordering = ('author_id')
+        ordering = ('author_id',)
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}'
