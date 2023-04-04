@@ -118,12 +118,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
         get_object_or_404(model, recipe__pk=pk, user=request.user).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=('POST',),
-            permission_classes=[IsAuthenticated])
+    @action(['post', 'delete'], detail=True)
     def favorite(self, request, pk):
-        return self.favorite_shopping_cart_action(request,
-                                                  pk,
-                                                  FavoriteSerializer)
+        return self.favorite_shopping_cart_action(request, pk, Favorites)
+    
+    @action(['post', 'delete'], detail=True)
+    def shopping_cart(self, request, pk):
+        return self.favorite_shopping_cart_action(request, pk, ShoppingCart)
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
@@ -155,13 +156,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'ingredient__name',
             'ingredient__measurement_unit').annotate(amount=Sum('amount'))
         return self.send_message(ingredients)
-
-    @action(detail=True, methods=('POST',),
-            permission_classes=[IsAuthenticated])
-    def shopping_cart(self, request, pk):
-        return self.favorite_shopping_cart_action(request,
-                                                  pk,
-                                                  ShoppingCartSerializer)
 
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):
