@@ -1,7 +1,10 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
+
 from recipes.models import (Favorites, Ingredient,
+                            IngredientInRecipe,
                             Recipe, ShoppingCart,
-                            Tag, IngredientInRecipe)
+                            Tag,)
 
 
 class IngredientInRecipe(admin.TabularInline):
@@ -27,14 +30,14 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'author', 'favorites']
+    list_filter = ['author', 'name', 'tags']
     search_fields = ['name', 'author__username']
     inlines = (IngredientInRecipe,)
     empty_value_display = '-пусто-'
 
     def favorites(self, obj):
-        if Favorites.objects.filter(recipe=obj).exists():
-            return Favorites.objects.filter(recipe=obj).count()
-        return 0
+        return obj.favorites.count()
+    favorites.short_description = 'Избранное'
 
 
 @admin.register(Favorites)
@@ -49,3 +52,5 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'recipe']
     search_fields = ['user__username', 'user__email']
     empty_value_display = '-пусто-'
+
+admin.site.unregister(Group)
