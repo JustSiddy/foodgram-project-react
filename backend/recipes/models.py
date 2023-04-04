@@ -140,7 +140,7 @@ class Favorites(FavoriteShoppingCartModel):
     """Модель избранных рецептов."""
     class Meta(FavoriteShoppingCartModel.Meta):
         verbose_name = 'Избранное'
-        default_related_name = 'favorite'
+        default_related_name = 'favorites'
 
 
 class ShoppingCart(FavoriteShoppingCartModel):
