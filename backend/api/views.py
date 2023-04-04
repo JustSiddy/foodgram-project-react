@@ -30,31 +30,30 @@ class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]
 
-    @action(['post', 'delete'], detail=True)
-    def subscribe(self, request, id):
-        """Subscribe and unsubscribe to user."""
-        author = get_object_or_404(User, pk=id)
-        data = {'follower': request.user.id, 'followed': id}
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated]
+    )
+    def subscribe(self, request, **kwargs):
+        user = request.user
+        author_id = self.kwargs.get('id')
+        author = get_object_or_404(User, id=author_id)
+
         if request.method == 'POST':
-            serializer = self.get_serializer(data=data)
+            serializer = SubscriptionSerializer(author,
+                                             data=request.data,
+                                             context={"request": request})
             serializer.is_valid(raise_exception=True)
-            serializer.save()
-            response_serializer = SubscriptionSerializer(
-                author,
-                context={'request': request}
-            )
+            Subscription.objects.create(user=user, author=author)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            return Response(
-                response_serializer.data,
-                status=status.HTTP_201_CREATED
-            )
-
-        get_object_or_404(
-            Subscription,
-            **data
-        ).delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.method == 'DELETE':
+            subscription = get_object_or_404(Subscription,
+                                             user=user,
+                                             author=author)
+            subscription.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     # def post(self, request, id):
     #     data = {
@@ -69,9 +68,13 @@ class SubscribeView(APIView):
     #         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     # def delete(self, request, id):
-    #     get_object_or_404(
-    #         Subscription, user=request.user, id=id).delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    #     author = get_object_or_404(User, id=id)
+    #     if Subscription.objects.filter(
+    #         user=request.user, author=author).exists():
+    #         subscription = get_object_or_404(
+    #             Subscription, user=request.user, author=author)
+    #         subscription.delete()
+    #         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ShowSubscriptionsView(ListAPIView):
     """Отображение подписок."""
