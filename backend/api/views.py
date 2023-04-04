@@ -30,28 +30,30 @@ class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]
 
-    @action(
-        detail=True,
-        methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated],
-    )
+    @action(['post', 'delete'], detail=True)
     def subscribe(self, request, id):
-        """Подписка на автора и отписка от него."""
-        user = request.user
+        """Subscribe and unsubscribe to user."""
         author = get_object_or_404(User, pk=id)
-        data = {
-            'user': user.id,
-            'author': author.id,
-        }
+        data = {'follower': request.user.id, 'followed': id}
         if request.method == 'POST':
-            serializer = SubscriptionSerializer(
-                data=data, context={'request': request}
-            )
+            serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_serializer = SubscriptionSerializer(
+                author,
+                context={'request': request}
+            )
+
+            return Response(
+                response_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+
         get_object_or_404(
-            Subscription, user=request.user, author=author).delete()
+            Subscription,
+            **data
+        ).delete()
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     # def post(self, request, id):
