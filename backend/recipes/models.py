@@ -9,10 +9,10 @@ from users.models import User
 class Tag(models.Model):
     """Модель тегов."""
     name = models.CharField(
-        'Название тега.',
+        verbose_name='Название тега.',
         max_length=settings.NAME_SLUG_LENGTH)
     color = models.CharField(
-        'Цветовой HEX-код.',
+        verbose_name='Цветовой HEX-код.',
         max_length=settings.COLOR_FIELD_LENGTH)
     slug = models.SlugField(
         'Slug',
@@ -30,10 +30,10 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Модель ингредиентов."""
     name = models.CharField(
-        'Название ингредиента.',
+        verbose_name='Название ингредиента.',
         max_length=settings.NAME_SLUG_LENGTH)
     measurement_unit = models.CharField(
-        'Единица измерения.',
+        verbose_name='Единица измерения.',
         max_length=settings.NAME_SLUG_LENGTH)
 
     class Meta:
@@ -58,13 +58,13 @@ class Recipe(models.Model):
         related_name='Recipe',
         verbose_name='Автор')
     name = models.CharField(
-        'Название рецепта.',
+        verbose_name='Название рецепта.',
         max_length=settings.NAME_SLUG_LENGTH)
     image = models.ImageField(
-        'Изображение.',
+        verbose_name='Изображение.',
         upload_to='recipes/images/')
     text = models.TextField(
-        'Описание рецепта.')
+        verbose_name='Описание рецепта.')
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientInRecipe',
@@ -101,8 +101,8 @@ class IngredientInRecipe(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         verbose_name='Ингредиент')
-    amount = models.PositiveSmallIntegerField(
-        'Количество.',
+    amount = models.PositiveIntegerField(
+        verbose_name='Количество.',
         validators=[MinValueValidator(1)])
 
     class Meta:
