@@ -35,18 +35,19 @@ class SubscribeView(APIView):
         author = get_object_or_404(
             User,
             pk=id)
+        data = {
+            'user': request.user.id,
+            'author': id}
 
         if request.method == 'POST':
             serializer = SubscriptionSerializer(
-                author, data=request.data, context={'request': request})
+                author, data=data, context={'request': request})
             serializer.is_valid(raise_exception=True)
-            Subscription.objects.create(user=user, author=author)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        if request.method == 'DELETE':
-            get_object_or_404(
-                Subscription, user=user, author=author).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        get_object_or_404(
+                Subscription, user=request.user, author=author).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ShowSubscriptionsView(ListAPIView):
