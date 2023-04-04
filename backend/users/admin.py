@@ -8,15 +8,15 @@ from users.models import Subscription, User
 class UserAdmin(UserAdmin):
     list_display = ('username', 'email', 'id',
                     'first_name', 'last_name',
-                    'get_recipes_count',
+                    'get_recipe_count',
                     'get_followers_count',)
     list_filter = ('email', 'username')
     search_fields = ('email', 'username')
     empty_value_display = '-пусто-'
 
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
-    get_recipes_count.short_description = 'Рецепты'
+    def get_recipe_count(self, obj):
+        return obj.recipe.count()
+    get_recipe_count.short_description = 'Рецепты'
 
     def get_followers_count(self, obj):
         return obj.user.count()
