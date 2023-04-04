@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import action, api_view
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
@@ -30,6 +30,11 @@ class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]
 
+    @action(
+        detail=True,
+        methods=['POST', 'DELETE'],
+        permission_classes=[IsAuthenticated],
+    )
     def subscribe(self, request, id):
         """Подписка на автора и отписка от него."""
         user = request.user
