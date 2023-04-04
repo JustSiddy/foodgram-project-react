@@ -39,8 +39,12 @@ class RecipeAdmin(admin.ModelAdmin):
     favorites.short_description = 'Избранное'
 
     def get_ingredients(self, obj):
-        ingredients = obj.ingredients.all().value_list('name', flat=True)
-        return ', '.join(ingredients)
+        return ', '.join(
+            f'{ingr.name} - '
+            f'{obj.ingrs_recipes.filter(ingredient=ingr.id).first().amount} '
+            f'{ingr.measurement_unit} '
+            for ingr in obj.ingredients.all()
+        )
 
 
 @admin.register(Favorites)
