@@ -30,22 +30,41 @@ class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, id):
+    def subscribe(self, request, id):
+        """Подписка на автора и отписка от него."""
+        user = request.user
+        author = get_object_or_404(User, pk=id)
         data = {
-            'user': request.user.id,
-            'author': id}
+            'user': user.id,
+            'author': author.id,
+        }
         if request.method == 'POST':
             serializer = SubscriptionSerializer(
-                data=data,
-                context={'request': request})
+                data=data, context={'request': request}
+            )
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def delete(self, request, id):
         get_object_or_404(
-            Subscription, user=request.user, id=id).delete()
+            Subscription, user=request.user, author=author).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # def post(self, request, id):
+    #     data = {
+    #         'user': request.user.id,
+    #         'author': id}
+    #     if request.method == 'POST':
+    #         serializer = SubscriptionSerializer(
+    #             data=data,
+    #             context={'request': request})
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # def delete(self, request, id):
+    #     get_object_or_404(
+    #         Subscription, user=request.user, id=id).delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ShowSubscriptionsView(ListAPIView):
     """Отображение подписок."""
