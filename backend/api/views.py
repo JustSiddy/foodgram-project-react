@@ -41,17 +41,11 @@ class SubscribeView(APIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        get_object_or_404(
-            Subscription,
-            **data).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    # def delete(self, request, id):
-    #     subscription = get_object_or_404(Subscription,
-    #                                          user=request.user,
-    #                                          id=id)
-    #     subscription.delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, id):
+        get_object_or_404(
+            Subscription, user=request.user, id=id).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ShowSubscriptionsView(ListAPIView):
     """Отображение подписок."""
