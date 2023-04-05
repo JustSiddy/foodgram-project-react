@@ -35,9 +35,8 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
     def favorites(self, obj):
-        if Favorites.objects.filter(recipe=obj).exists():
-            return Favorites.objects.filter(recipe=obj).count()
-        return 0
+        return obj.favorites.count()
+    favorites.short_description = 'Избранное'
 
 
 @admin.register(Favorites)
