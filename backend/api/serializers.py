@@ -116,6 +116,39 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         ingredient_list.sort(key=(lambda item: item.ingredient.name))
         IngredientInRecipe.objects.bulk_create(ingredient_list)
 
+    def validate(self, data):
+        ingredients = data.get('ingredients')
+        if not ingredients:
+            raise serializers.ValidationError({
+                'Необходимо выбрать хотя бы 1 ингредиент.'})
+        ingredient_list = []
+        for ingredient in ingredients:
+            ingredient_id = ingredient.get('id')
+            if not ingredient_id:
+                raise serializers.ValidationError({
+                    'Необходимо выбрать хотя бы 1 ингредиент.'})
+            if ingredient_id in ingredient_list:
+                raise serializers.ValidationError({
+                    'Все ингредиенты должны быть уникальными.'})
+            ingredient_list.append(ingredient_id)
+        tags = data.get('tags')
+        if not tags:
+            raise serializers.ValidationError({
+                'Необходимо выбрать хотя бы 1 тег.'})
+        tags_list = []
+        for tag in tags:
+            if tag in tags_list:
+                raise serializers.ValidationError({
+                    'Теги должны быть уникальными.'})
+            tags_list.append(tag)
+        return data        
+ 
+    def validate_cooking_time(self, cooking_time): 
+        if cooking_time < 1: 
+            raise serializers.ValidationError( 
+                'Время готовки должно быть не меньше одной минуты') 
+        return cooking_time 
+
     def create(self, validated_data):
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
