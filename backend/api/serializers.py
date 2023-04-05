@@ -9,14 +9,6 @@ from recipes.models import (Favorites, Ingredient, Recipe,
 from users.models import Subscription, User
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
-    """Сериализатор создания пользователя."""
-    class Meta:
-        model = User
-        fields = ['email', 'username', 'first_name',
-                  'last_name', 'password']
-
-
 class CustomUserSerializer(UserSerializer):
     """Сериализатор модели пользователя."""
     is_subscribed = serializers.SerializerMethodField(read_only=True)

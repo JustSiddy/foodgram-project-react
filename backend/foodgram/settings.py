@@ -6,18 +6,21 @@ load_dotenv()
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_ROOT = os.path.join(BASE_DIR, 'data/')
 
 
 SECRET_KEY = os.getenv(
     'SECRET_KEY',
     default='7%dd60q-m#8h-$f67rrq8#565(_me9==-lx7s2*btrbjkr%lgo')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ['158.160.3.114', 'backend',
+ALLOWED_HOSTS = ['158.160.3.114', 'backend', 
                  '127.0.0.1']
-
-CSRF_TRUSTED_ORIGINS = ['http://158.160.3.114']
+#никак не смог перекинуть все в енв файл
+#чтобы оно не конфликтовало с админкой
+ 
+CSRF_TRUSTED_ORIGINS = ['http://158.160.3.114'] 
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -122,10 +125,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AUTH_USER_MODEL = 'users.User'
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -138,7 +137,6 @@ REST_FRAMEWORK = {
 DJOSER = {
     'SERIALIZERS': {
         'user': 'api.serializers.CustomUserSerializer',
-        'user_create': 'api.serializers.CustomUserCreateSerializer',
         'current_user': 'api.serializers.CustomUserSerializer',
     },
     'PERMISSIONS': {
@@ -148,7 +146,11 @@ DJOSER = {
     'HIDE_USERS': False,
 }
 
-STRING_FIELD_LENGTH = 150
+AUTH_USER_MODEL = 'users.User'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 EMAIL_FIELD_LENGTH = 254
+STRING_FIELD_LENGTH = 150
 NAME_SLUG_LENGTH = 200
 COLOR_FIELD_LENGTH = 7
