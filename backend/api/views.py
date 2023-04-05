@@ -53,34 +53,6 @@ class SubscribeView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-    # def post(self, request, id):
-    #     data = {
-    #         'user': request.user.id,
-    #         'author': id}
-    #     if request.method == 'POST':
-    #         serializer = SubscriptionSerializer(
-    #             data=data,
-    #             context={'request': request})
-    #         serializer.is_valid(raise_exception=True)
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    # def delete(self, request, id):
-    #     author = get_object_or_404(User, id=id)
-    #     if Subscription.objects.filter(
-    #         user=request.user, author=author).exists():
-    #         subscription = get_object_or_404(
-    #             Subscription, user=request.user, author=author)
-    #         subscription.delete()
-    #         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    # вариант из прошлого ревью, с ним вылетает ошибка по отмене подписки
-    # def delete(self, request, id):
-    #     get_object_or_404(
-    #         Subscription, user=request.user, id=id).delete()
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 class ShowSubscriptionsView(ListAPIView):
     """Отображение подписок."""
     permission_classes = [IsAuthenticated]
