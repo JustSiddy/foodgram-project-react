@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from recipes.models import (Favorites, Ingredient, Recipe, IngredientInRecipe,
-                            ShoppingCart, Tags)
+                            ShoppingCart, Tag)
 from users.models import Subscription, User
 
 from api.filters import IngredientFilter, RecipeFilter
@@ -98,7 +98,7 @@ class FavoriteView(APIView):
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     """Отображение тегов."""
-    queryset = Tags.objects.all()
+    queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
     permission_classes = (IsAuthenticatedOrReadOnly,)
