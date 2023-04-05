@@ -38,6 +38,14 @@ class RecipeAdmin(admin.ModelAdmin):
         return obj.favorites.count()
     favorites.short_description = 'Избранное'
 
+    def get_ingredients(self, obj):
+        return ', '.join(
+            f'{ingr.name} - '
+            f'{obj.ingrs_recipes.filter(ingredient=ingr.id).first().amount} '
+            f'{ingr.measurement_unit} '
+            for ingr in obj.ingredients.all()
+        )
+
 
 @admin.register(Favorites)
 class FavoritesAdmin(admin.ModelAdmin):
@@ -51,3 +59,5 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'recipe']
     search_fields = ['user__username', 'user__email']
     empty_value_display = '-пусто-'
+
+admin.site.unregister(Group)
