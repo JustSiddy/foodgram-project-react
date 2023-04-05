@@ -30,29 +30,34 @@ class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]
 
-    @action(
-        detail=True,
-        methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated],
-    )
-    def subscribe(self, request, id):
-        """Подписка на автора и отписка от него."""
+    @action(['get'], detail=False)
+    def subscriptions(self, request):
+        """Returns all users that request.user follows."""
         user = request.user
+        queryset = user.follows.all()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(['post', 'delete'], detail=True)
+    def subscribe(self, request, id):
+        """Subscribe and unsubscribe to user."""
         author = get_object_or_404(User, pk=id)
-        data = {
-            'user': user.id,
-            'author': author.id,
-        }
+        data = {'follower': request.user.id, 'followed': id}
         if request.method == 'POST':
-            serializer = SubscriptionSerializer(
-                data=data, context={'request': request}
-            )
+            serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        get_object_or_404(
-            Subscription, user=request.user, author=author
-        ).delete()
+            response_serializer = ShowSubscriptionsSerializer(
+                author,
+                context={'request': request})
+            return Response(
+                response_serializer.data,
+                status=status.HTTP_201_CREATED)
+        get_object_or_404(Subscription, **data).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
