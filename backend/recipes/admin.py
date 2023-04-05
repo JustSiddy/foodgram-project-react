@@ -1,13 +1,15 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
+
 from recipes.models import (Favorites, Ingredient,
+                            IngredientInRecipe,
                             Recipe, ShoppingCart,
-                            Tag, IngredientInRecipe)
+                            Tag)
 
 
 class IngredientInRecipe(admin.TabularInline):
     model = IngredientInRecipe
     min_num = 1
-    extra = 1
 
 
 @admin.register(Tag)
@@ -27,6 +29,7 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'author', 'favorites']
+    list_filter = ['author', 'name', 'tags']
     search_fields = ['name', 'author__username']
     inlines = (IngredientInRecipe,)
     empty_value_display = '-пусто-'
