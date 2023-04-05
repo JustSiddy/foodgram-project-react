@@ -6,21 +6,12 @@ from users.models import Subscription, User
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'id',
-                    'first_name', 'last_name',
-                    'get_recipe_count',
-                    'get_followers_count',)
+    list_display = ('username', 'email',
+                    'first_name', 'last_name')
     list_filter = ('email', 'username')
     search_fields = ('email', 'username')
     empty_value_display = '-пусто-'
 
-    def get_recipe_count(self, obj):
-        return obj.recipe.count()
-    get_recipe_count.short_description = 'Рецепты'
-
-    def get_followers_count(self, obj):
-        return obj.user.count()
-    get_followers_count.short_description = 'Подписчики'
 
 @admin.register(Subscription)
 class SubscriptionsAdmin(admin.ModelAdmin):

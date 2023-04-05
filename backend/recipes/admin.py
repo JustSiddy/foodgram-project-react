@@ -1,18 +1,16 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
-
 from recipes.models import (Favorites, Ingredient,
-                            IngredientInRecipe,
                             Recipe, ShoppingCart,
-                            Tag,)
+                            Tags, IngredientInRecipe)
 
 
 class IngredientInRecipe(admin.TabularInline):
     model = IngredientInRecipe
     min_num = 1
+    extra = 1
 
 
-@admin.register(Tag)
+@admin.register(Tags)
 class TagAdmin(admin.ModelAdmin):
     list_display = ['name', 'id', 'slug', 'color']
     search_fields = ['name', 'slug']
@@ -29,22 +27,14 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'author', 'favorites']
-    list_filter = ['author', 'name', 'tags']
     search_fields = ['name', 'author__username']
     inlines = (IngredientInRecipe,)
     empty_value_display = '-пусто-'
 
     def favorites(self, obj):
-        return obj.favorites.count()
-    favorites.short_description = 'Избранное'
-
-    def get_ingredients(self, obj):
-        return ', '.join(
-            f'{ingr.name} - '
-            f'{obj.ingrs_recipes.filter(ingredient=ingr.id).first().amount} '
-            f'{ingr.measurement_unit} '
-            for ingr in obj.ingredients.all()
-        )
+        if Favorites.objects.filter(recipe=obj).exists():
+            return Favorites.objects.filter(recipe=obj).count()
+        return 0
 
 
 @admin.register(Favorites)
@@ -59,5 +49,3 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'recipe']
     search_fields = ['user__username', 'user__email']
     empty_value_display = '-пусто-'
-
-admin.site.unregister(Group)
