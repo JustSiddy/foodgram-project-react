@@ -103,19 +103,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         fields = ['id', 'author', 'ingredients', 'tags',
                   'image', 'name', 'text', 'cooking_time']
 
-    @staticmethod
-    def set_recipe_ingredient(ingredients, recipe):
-        ingredient_list = [
-            IngredientInRecipe(
-                ingredient=get_object_or_404(
-                    Ingredient, pk=ingredient.get('id').id),
-                recipe=recipe,
-                amount=ingredient.get('amount'),
-             )
-            for ingredient in ingredients
-        ]
-        ingredient_list.sort(key=(lambda item: item.ingredient.name))
-        IngredientInRecipe.objects.bulk_create(ingredient_list)
+    @staticmethod 
+    def set_recipe_ingredient(ingredients, recipe): 
+        for ingredient in ingredients:
+            IngredientInRecipe.objects.create(
+                recipe=recipe, ingredient=ingredient['id'],
+                amount=ingredient['amount'])
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
