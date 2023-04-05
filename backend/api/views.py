@@ -30,35 +30,26 @@ class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]
 
-    @action(['get'], detail=False)
-    def subscriptions(self, request):
-        """Returns all users that request.user follows."""
-        user = request.user
-        queryset = user.follows.all()
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-    @action(['post', 'delete'], detail=True)
-    def subscribe(self, request, id):
-        """Subscribe and unsubscribe to user."""
-        author = get_object_or_404(User, pk=id)
-        data = {'follower': request.user.id, 'followed': id}
-        if request.method == 'POST':
-            serializer = self.get_serializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            response_serializer = ShowSubscriptionsSerializer(
-                author,
-                context={'request': request})
-            return Response(
-                response_serializer.data,
-                status=status.HTTP_201_CREATED)
-        get_object_or_404(Subscription, **data).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def post(self, request, id): 
+        data = { 
+            'user': request.user.id, 
+            'author': id} 
+        serializer = SubscriptionSerializer( 
+            data=data, 
+            context={'request': request}) 
+        serializer.is_valid(raise_exception=True)
+        serializer.save() 
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+ 
+    def delete(self, request, id): 
+        author = get_object_or_404(User, id=id) 
+        if Subscription.objects.filter( 
+           user=request.user, author=author).exists(): 
+            subscription = get_object_or_404( 
+                Subscription, user=request.user, author=author) 
+            subscription.delete() 
+            return Response(status=status.HTTP_204_NO_CONTENT) 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
     # def post(self, request, id):
