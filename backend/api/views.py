@@ -92,10 +92,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """
-    Добавление рецепта.
-    Изменение рецепта.
-    Удаление рецепта.
-    Просмотр рецепта.
+    Все действия с рецептами.
+    все децствия с корзиной и избранными.
     """
     queryset = Recipe.objects.all()
     permission_classes = [IsAuthorOrAdminOrReadOnly]
