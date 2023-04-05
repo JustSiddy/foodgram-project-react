@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.db import models
 
 from users.models import Subscription, User
 
@@ -11,6 +12,15 @@ class UserAdmin(UserAdmin):
     list_filter = ('email', 'username')
     search_fields = ('email', 'username')
     empty_value_display = '-пусто-'
+    follows = models.ManyToManyField(
+        'self',
+        through='Subscription',
+        symmetrical=False
+    )
+    favorites_recipes = models.ManyToManyField(
+        'recipes.Recipe',
+        'Favorites'
+    )
 
 
 @admin.register(Subscription)
