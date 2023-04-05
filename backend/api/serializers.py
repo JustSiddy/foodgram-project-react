@@ -185,6 +185,14 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         model = ShoppingCart
         fields = ['user', 'recipe']
 
+    def validate(self, data): 
+        user = data['user'] 
+        if user.shopping_cart.filter(recipe=data['recipe']).exists(): 
+            raise serializers.ValidationError( 
+                'Рецепт уже в списке покупок' 
+            ) 
+        return data
+
     def to_representation(self, instance):
         return ShowFavoriteSerializer(instance.recipe, context={
             'request': self.context.get('request')}).data
