@@ -10,10 +10,6 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recipes.models import (Favorites, Ingredient, Recipe, IngredientInRecipe,
-                            ShoppingCart, Tag)
-from users.models import Subscription, User
-
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import LimitPageNumberPagination
 from api.permissions import IsAuthorOrAdminOrReadOnly
@@ -23,22 +19,27 @@ from api.serializers import (CreateRecipeSerializer, FavoriteSerializer,
                              ShowSubscriptionsSerializer,
                              SubscriptionSerializer, TagSerializer)
 
+from recipes.models import (Favorites, Ingredient, Recipe, IngredientInRecipe,
+                            ShoppingCart, Tag)
+from users.models import Subscription, User
+
 
 class SubscribeView(APIView):
     """ Операция подписки/отписки. """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, id):
-        data = {
-            'user': request.user.id,
-            'author': id}
-        serializer = SubscriptionSerializer(
-            data=data,
-            context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
+        user = request.user
+        author = get_object_or_404(
+            User,
+            pk=id)
+
+        if request.method == 'POST':
+            serializer = SubscriptionSerializer(
+                author, data=request.data, context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            Subscription.objects.create(user=user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
         author = get_object_or_404(User, id=id)
