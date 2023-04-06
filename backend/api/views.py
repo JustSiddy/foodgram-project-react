@@ -96,7 +96,7 @@ class FavoriteView(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class TagsViewSet(viewsets.ReadOnlyModelViewSet):
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Отображение тегов."""
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
