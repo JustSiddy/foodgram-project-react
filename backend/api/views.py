@@ -29,17 +29,15 @@ class SubscribeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, id):
-        user = request.user
-        author = get_object_or_404(
-            User,
-            pk=id)
-
-        if request.method == 'POST':
-            serializer = SubscriptionSerializer(
-                author, data=request.data, context={'request': request})
-            serializer.is_valid(raise_exception=True)
-            Subscription.objects.create(user=user, author=author)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        data = {
+            'user': request.user.id,
+            'author': id}
+        serializer = SubscriptionSerializer(
+            data=data,
+            context={'request': request})
+        serializer.is_valid(serializer.is_valid(raise_exception=True))
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id):
         author = get_object_or_404(User, id=id)
