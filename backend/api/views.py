@@ -104,14 +104,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     def delete_method_actions(self, request, pk, model):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
         model_object = get_object_or_404(model, user=user, recipe=recipe)
         model_object.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
+
     @action(detail=True, methods=["POST"],
             permission_classes=[IsAuthenticated])
     def favorite(self, request, pk):
@@ -122,7 +122,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def delete_favorite(self, request, pk):
         return self.delete_method_actions(
             request=request, pk=pk, model=Favorites)
-    
+
     @action(detail=True, methods=["POST"],
             permission_classes=[IsAuthenticated])
     def shopping_cart(self, request, pk):

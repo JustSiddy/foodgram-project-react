@@ -15,12 +15,10 @@ class UserAdmin(UserAdmin):
     follows = models.ManyToManyField(
         'self',
         through='Subscription',
-        symmetrical=False
-    )
+        symmetrical=False)
     favorites_recipes = models.ManyToManyField(
         'recipes.Recipe',
-        'Favorites'
-    )
+        'Favorites')
 
 
 @admin.register(Subscription)

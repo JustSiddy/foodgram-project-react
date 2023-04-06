@@ -1,5 +1,4 @@
-from django.shortcuts import get_object_or_404
-from djoser.serializers import UserCreateSerializer, UserSerializer
+from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -74,10 +73,10 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def _is_exist(self, arg0, obj):
         request = self.context.get('request', None)
-        current_user = request.user 
-        return arg0.objects.filter( 
-            user=current_user.id, 
-            recipe=obj.id).exists() 
+        current_user = request.user
+        return arg0.objects.filter(
+            user=current_user.id,
+            recipe=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
         return self._is_exist(ShoppingCart, obj)
@@ -96,7 +95,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True)
     image = Base64ImageField()
-    cooking_time = serializers.IntegerField() 
+    cooking_time = serializers.IntegerField()
 
     class Meta:
         model = Recipe
@@ -109,8 +108,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             IngredientInRecipe(
                 ingredient=ingredient.get('id'),
                 recipe=recipe,
-                amount=ingredient.get('amount'),
-             )
+                amount=ingredient.get('amount'))
             for ingredient in ingredients
         ]
         ingredient_list.sort(key=(lambda item: item.ingredient.name))
@@ -141,13 +139,13 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'Теги должны быть уникальными.'})
             tags_list.append(tag)
-        return data        
- 
-    def validate_cooking_time(self, cooking_time): 
-        if cooking_time < 1: 
-            raise serializers.ValidationError( 
-                'Время готовки должно быть не меньше одной минуты') 
-        return cooking_time 
+        return data
+
+    def validate_cooking_time(self, cooking_time):
+        if cooking_time < 1:
+            raise serializers.ValidationError(
+                'Время готовки должно быть не меньше одной минуты')
+        return cooking_time
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
@@ -185,12 +183,11 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         model = ShoppingCart
         fields = ['user', 'recipe']
 
-    def validate(self, data): 
-        user = data['user'] 
-        if user.shopping_cart.filter(recipe=data['recipe']).exists(): 
-            raise serializers.ValidationError( 
-                'Рецепт уже в списке покупок' 
-            ) 
+    def validate(self, data):
+        user = data['user']
+        if user.shopping_cart.filter(recipe=data['recipe']).exists():
+            raise serializers.ValidationError(
+                'Рецепт уже в списке покупок')
         return data
 
     def to_representation(self, instance):
