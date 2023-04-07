@@ -7,7 +7,8 @@ from users.models import Subscription, User
 @admin.register(User) 
 class UserAdmin(UserAdmin): 
     list_display = ('username', 'email', 
-                    'first_name', 'last_name') 
+                    'first_name', 'last_name',
+                    'get_recipes_count', 'get_followers_count') 
     list_filter = ('email', 'username') 
     search_fields = ('email', 'username') 
     empty_value_display = '-пусто-' 
