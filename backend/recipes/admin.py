@@ -28,11 +28,15 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'author', 'favorites']
+    list_display = ('id', 'name', 'author', 'favorites', 'get_tags')
     list_filter = ['author', 'name', 'tags']
     search_fields = ['name', 'author__username']
     inlines = (IngredientInRecipe,)
     empty_value_display = '-пусто-'
+
+    def get_tags(self, obj):
+        list_ = [_.name for _ in obj.tags.all()]
+        return ', '.join(list_)
 
     def favorites(self, obj):
         return obj.favorites.count()
