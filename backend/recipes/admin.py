@@ -28,7 +28,8 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'author', 'favorites', 'get_tags')
+    list_display = ('id', 'name', 'author', 'favorites',
+                    'get_tags', 'get_ingredients')
     list_filter = ['author', 'name', 'tags']
     search_fields = ['name', 'author__username']
     inlines = (IngredientInRecipe,)
@@ -49,6 +50,7 @@ class RecipeAdmin(admin.ModelAdmin):
             f'{ingr.measurement_unit} '
             for ingr in obj.ingredients.all()
         )
+    get_ingredients.short_description = 'Ингредиенты'
 
 
 @admin.register(Favorites)
