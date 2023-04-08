@@ -40,7 +40,7 @@ class SubscribeView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, pk, model):
-        get_object_or_404(model, user=request.user,
+        get_object_or_404(Subscription, user=request.user,
                           recipe=get_object_or_404(Recipe, id=pk)).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -101,7 +101,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_method_actions(self, request, pk, model):
-        get_object_or_404(model, user=request.user, 
+        get_object_or_404(Favorites, user=request.user, 
                           recipe=get_object_or_404(Recipe, id=pk)).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
