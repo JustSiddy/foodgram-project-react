@@ -15,7 +15,7 @@ class Command(BaseCommand):
             for row in reader(ingredients):
                 name, measurement_unit = row
                 Ingredient.objects.get_or_create(
-                    name=name, measurement_unit=measurement_unit,
+                    name=name[0], measurement_unit=measurement_unit[1],
                 )
         self.stdout.write(self.style.SUCCESS('Ингредиенты загружены.'))
 
@@ -25,6 +25,6 @@ class Command(BaseCommand):
             for row in reader(tags):
                 (name, color, slug) = row
                 Tag.objects.get_or_create(
-                    name=name, color=color, slug=slug,
+                    name=name[0], color=color[1], slug=slug[2],
                 )
         self.stdout.write(self.style.SUCCESS('Теги загружены.'))
