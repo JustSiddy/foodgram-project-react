@@ -19,9 +19,8 @@ class CustomUserSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return request.follower.filter(
-                user=request.user, author=obj).exists()
+        if request and request.user.is_anonymous:
+            return obj.follower.filter().exists()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -221,9 +220,8 @@ class ShowSubscriptionsSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return request.follower.filter(
-                user=request.user, author=obj).exists()
+        if request and request.user.is_anonymous:
+            return obj.follower.filter().exists()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
