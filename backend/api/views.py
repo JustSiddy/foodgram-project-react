@@ -40,9 +40,14 @@ class SubscribeView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, id):
-        get_object_or_404(Subscription, user=request.user, 
-                          author=get_object_or_404(Recipe, id=id)).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        author = get_object_or_404(User, id=id)
+        if Subscription.objects.filter(
+           user=request.user, author=author).exists():
+            subscription = get_object_or_404(
+                Subscription, user=request.user, author=author)
+            subscription.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ShowSubscriptionsView(ListAPIView):
@@ -100,7 +105,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def delete_method_actions(self, request, pk, model):
+    def delete_method_actions(self, request, pk):
         get_object_or_404(Favorites, user=request.user, 
                           recipe=get_object_or_404(Recipe, id=pk)).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
