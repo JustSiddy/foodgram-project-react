@@ -72,7 +72,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def _is_exist(self, arg0, obj):
         request = self.context.get('request', None)
-        current_user = request.user
         return arg0.objects.filter(
             user=current_user.id,
             recipe=obj.id).exists()
