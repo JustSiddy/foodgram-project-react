@@ -106,10 +106,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_method_actions(self, request, pk, model):
-        user = request.user
-        recipe = get_object_or_404(Recipe, id=pk)
-        model_object = get_object_or_404(model, user=user, recipe=recipe)
-        model_object.delete()
+        get_object_or_404(model,
+                          user=request.user,
+                          recipe=get_object_or_404(Recipe, id=pk)).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["POST"],
