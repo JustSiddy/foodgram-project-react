@@ -13,7 +13,8 @@ class Command(BaseCommand):
                 'recipes/data/ingredients.csv', 'r',
                 encoding='UTF-8') as ingredients:
             for row in reader(ingredients):
-                name, measurement_unit = row
+                name = row
+                measurement_unit = row
                 Ingredient.objects.get_or_create(
                     name=name[0], measurement_unit=measurement_unit[1],
                 )
@@ -23,7 +24,9 @@ class Command(BaseCommand):
                 'recipes/data/tags.csv', 'r',
                 encoding='UTF-8') as tags:
             for row in reader(tags):
-                (name, color, slug) = row
+                name = row
+                color = row
+                slug = row
                 Tag.objects.get_or_create(
                     name=name[0], color=color[1], slug=slug[2],
                 )
