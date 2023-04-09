@@ -140,6 +140,7 @@ class Favorites(FavoriteShoppingCartModel):
     """Модель избранных рецептов."""
     class Meta(FavoriteShoppingCartModel.Meta):
         verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
         default_related_name = 'favorites'
 
 
@@ -147,6 +148,7 @@ class ShoppingCart(FavoriteShoppingCartModel):
     """Модель поукпок."""
     class Meta(FavoriteShoppingCartModel.Meta):
         verbose_name = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'
         default_related_name = 'shopping_cart'
 
 
