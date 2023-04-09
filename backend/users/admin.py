@@ -14,7 +14,7 @@ class UserAdmin(UserAdmin):
     empty_value_display = '-пусто-'
 
     def get_recipes_count(self, obj):
-        return obj.recipes.count()
+        return obj.Recipe.count()
     get_recipes_count.short_description = 'Рецепты'
 
     def get_followers_count(self, obj):
