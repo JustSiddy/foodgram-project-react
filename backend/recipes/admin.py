@@ -38,6 +38,7 @@ class RecipeAdmin(admin.ModelAdmin):
     def get_tags(self, obj):
         list_ = [_.name for _ in obj.tags.all()]
         return ', '.join(list_)
+    get_tags.short_description = 'Теги'
 
     def favorites(self, obj):
         return obj.favorites.count()
