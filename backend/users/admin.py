@@ -18,7 +18,7 @@ class UserAdmin(UserAdmin):
     get_recipes_count.short_description = 'Рецепты'
 
     def get_followers_count(self, obj):
-        return obj.user.count()
+        return obj.follower.count()
     get_followers_count.short_description = 'Подписчики'
 
 
